@@ -10,7 +10,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
     public class AddSettingsTests
     {
         [Fact]
-        public void Wires_up_SimpleAttributeValidatedSettings()
+        public void Wires_up_SimpleAttributeValidatedSettings_from_string()
         {
             var services = new ServiceCollection();
 
@@ -32,6 +32,24 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
 
             Assert.NotNull(result);
             Assert.Equal(1075, result.IntegerA);
+        }
+        
+        [Fact]
+        public void Wires_up_SimpleAttributeValidatedSettings_from_Test1_file()
+        {
+            var services = new ServiceCollection();
+
+            const string fileName = "TestSettingsJson/AddSettings-Test1.json";
+
+            var configuration = ConfigurationTestBuilder.BuildFromFile(fileName);
+            
+            services.AddSettings<SimpleAttributeValidatedSettings>(configuration);
+
+            var serviceProvider = services.BuildServiceProvider();
+            var result = serviceProvider.GetRequiredService<IOptions<SimpleAttributeValidatedSettings>>().Value;
+
+            Assert.NotNull(result);
+            Assert.Equal(89458, result.IntegerA);
         }
     }
 }
