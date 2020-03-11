@@ -6,6 +6,8 @@ using RecursiveDataAnnotationsValidation;
 
 namespace OptionsPatternValidation.ValidationOptions
 {
+    /// <summary>Second layer of the bridge between IServiceCollectionExtensions
+    /// and the recursive DataAnnotations validator.</summary>
     internal class RecursiveDataAnnotationValidateOptions<TOptions> 
         : IValidateOptions<TOptions>
         where TOptions : class
