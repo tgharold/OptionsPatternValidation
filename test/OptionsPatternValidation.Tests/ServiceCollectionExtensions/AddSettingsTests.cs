@@ -1,22 +1,29 @@
-using System.IO;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsPatternValidation.Tests.AttributeValidatedSettings;
+using OptionsPatternValidation.Tests.TestHelpers;
 using Xunit;
 
 namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
 {
+    /// <summary>Test the generic AddSettings(config) method.</summary>
     public class AddSettingsTests
     {
         [Fact]
         public void Wires_up_SimpleAttributeValidatedSettings()
         {
             var services = new ServiceCollection();
-            Stream stream = null; //TODO: Create a JSON string to feed into ConfigurationBuilder
-            var builder = new ConfigurationBuilder()
-                .AddJsonStream(stream);
-            var configuration = builder.Build();
+
+            
+            const string json = @"
+{
+""Simple"": {
+    ""IntegerA"": 1075
+  }
+}
+                ";
+
+            var configuration = ConfigurationTestBuilder.BuildFromJsonString(json);
             
             services.AddSettings<SimpleAttributeValidatedSettings>(configuration);
 
@@ -24,7 +31,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
             var result = serviceProvider.GetRequiredService<IOptions<SimpleAttributeValidatedSettings>>().Value;
 
             Assert.NotNull(result);
+            Assert.Equal(1075, result.IntegerA);
         }
-        
     }
 }
