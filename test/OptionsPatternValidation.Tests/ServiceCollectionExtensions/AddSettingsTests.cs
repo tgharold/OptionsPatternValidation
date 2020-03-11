@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using OptionsPatternValidation.Tests.AttributeValidatedSettings;
 using OptionsPatternValidation.Tests.TestHelpers;
+using OptionsPatternValidation.Tests.TestSettings.AttributeValidation;
 using Xunit;
 
 namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
