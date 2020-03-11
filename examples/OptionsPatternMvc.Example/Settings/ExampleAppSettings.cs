@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using OptionsPatternValidation.Attributes;
+using OptionsPatternValidation;
 
 namespace OptionsPatternMvc.Example.Settings
 {

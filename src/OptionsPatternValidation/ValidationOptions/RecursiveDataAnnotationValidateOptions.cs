@@ -6,7 +6,7 @@ using RecursiveDataAnnotationsValidation;
 
 namespace OptionsPatternValidation.ValidationOptions
 {
-    public class RecursiveDataAnnotationValidateOptions<TOptions> 
+    internal class RecursiveDataAnnotationValidateOptions<TOptions> 
         : IValidateOptions<TOptions>
         where TOptions : class
     {

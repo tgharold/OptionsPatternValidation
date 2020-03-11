@@ -1,6 +1,6 @@
 using System;
 
-namespace OptionsPatternValidation.Attributes
+namespace OptionsPatternValidation
 {
     /// <summary>Use this when the section name in the appsettings.json file does not match
     /// the name of the options class name.</summary>

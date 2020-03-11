@@ -1,9 +1,9 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OptionsPatternValidation.Attributes;
+using OptionsPatternValidation.Extensions;
 
-namespace OptionsPatternValidation.Extensions
+namespace OptionsPatternValidation
 {
     public static class IServiceCollectionExtensions
     {

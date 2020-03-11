@@ -6,7 +6,7 @@ namespace OptionsPatternValidation.Extensions
 {
     public static class OptionsBuilderDataAnnotationsExtensions
     {
-        public static OptionsBuilder<TOptions> RecursivelyValidateDataAnnotations<TOptions>(
+        internal static OptionsBuilder<TOptions> RecursivelyValidateDataAnnotations<TOptions>(
             this OptionsBuilder<TOptions> optionsBuilder
             ) where TOptions : class
         {

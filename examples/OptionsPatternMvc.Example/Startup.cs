@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OptionsPatternMvc.Example.Settings;
+using OptionsPatternValidation;
 using OptionsPatternValidation.Extensions;
 
 namespace OptionsPatternMvc.Example
