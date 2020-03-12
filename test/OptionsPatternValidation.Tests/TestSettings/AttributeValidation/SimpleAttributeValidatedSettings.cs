@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OptionsPatternValidation.Tests.AttributeValidatedSettings
+namespace OptionsPatternValidation.Tests.TestSettings.AttributeValidation
 {
     [SettingsSectionName("Simple")]
     public class SimpleAttributeValidatedSettings

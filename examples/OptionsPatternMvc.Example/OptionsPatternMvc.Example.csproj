@@ -4,9 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>  
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\OptionsPatternValidation\OptionsPatternValidation.csproj" />
   </ItemGroup>
-
 
 </Project>

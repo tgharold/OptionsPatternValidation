@@ -20,5 +20,19 @@ namespace OptionsPatternValidation.Tests.TestHelpers
 
             return configuration;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static IConfiguration BuildFromFile(string fileName)
+        {
+            if (fileName is null) throw new ArgumentNullException(nameof(fileName));
+            
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile(fileName);
+
+            return builder.Build();
+        }
     }
 }
