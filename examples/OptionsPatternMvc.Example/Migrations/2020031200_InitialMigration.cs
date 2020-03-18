@@ -17,7 +17,7 @@ namespace OptionsPatternMvc.Example.Migrations
                 .Table("WeatherForecasts")
                 .InSchema(SchemaName)
                 .WithColumn("Id").AsInt32().PrimaryKey().NotNullable()
-                .WithColumn("ForecastTime").AsDateTimeOffset().NotNullable()
+                .WithColumn("ForecastTime").AsDateTime().NotNullable()
                 .WithColumn("Date").AsDate().NotNullable()
                 .WithColumn("TemperatureC").AsInt32().NotNullable()
                 .WithColumn("Summary").AsString(50).NotNullable()

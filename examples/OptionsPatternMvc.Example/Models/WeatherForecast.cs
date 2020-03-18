@@ -7,7 +7,7 @@ namespace OptionsPatternMvc.Example.Models
     {
         public int Id { get; set; }
         
-        public DateTimeOffset ForecastTime { get; set; }
+        public DateTime ForecastTime { get; set; }
         
         public DateTime Date { get; set; }
 

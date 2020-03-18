@@ -50,7 +50,7 @@ namespace OptionsPatternMvc.Example.Services
         {
             return new WeatherForecast
             {
-                ForecastTime = DateTimeOffset.UtcNow,
+                ForecastTime = DateTime.UtcNow,
                 Date = date,
                 TemperatureC = _random.Next(-20, 55),
                 Summary = Summaries[_random.Next(Summaries.Length)]
