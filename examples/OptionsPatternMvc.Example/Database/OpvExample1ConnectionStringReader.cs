@@ -10,7 +10,7 @@ namespace OptionsPatternMvc.Example.Database
         private readonly ConnectionStringsSettings _connectionStringSettings;
 
         public OpvExample1ConnectionStringReader(
-            IOptionsSnapshot<ConnectionStringsSettings> connectionSettingsAccessor
+            IOptions<ConnectionStringsSettings> connectionSettingsAccessor
             )
         {
             _connectionStringSettings = connectionSettingsAccessor.Value;
