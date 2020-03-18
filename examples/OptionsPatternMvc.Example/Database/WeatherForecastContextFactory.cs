@@ -1,3 +1,4 @@
+using System;
 using System.Data.Entity.Infrastructure;
 using Microsoft.Extensions.Options;
 using OptionsPatternMvc.Example.Settings;
@@ -16,6 +17,10 @@ namespace OptionsPatternMvc.Example.Database
         public WeatherForecastContext Create()
         {
             var connectionString = _connectionStringsAccessor.CurrentValue.OpvExample1;
+            
+            if (string.IsNullOrEmpty(connectionString)) 
+                throw new Exception("Missing connection string.");
+            
             return new WeatherForecastContext(connectionString);
         }
     }

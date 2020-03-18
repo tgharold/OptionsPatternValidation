@@ -1,3 +1,4 @@
+using System;
 using FluentMigrator;
 using Microsoft.Extensions.Options;
 using OptionsPatternMvc.Example.Settings;
@@ -12,6 +13,9 @@ namespace OptionsPatternMvc.Example.Migrations.Base
         protected OpvExampleMigration(IOptions<DatabaseSettings> databaseSettingsAccessor)
         {
             _databaseSettings = databaseSettingsAccessor.Value;
+            
+            if (string.IsNullOrEmpty(SchemaName))
+                throw new Exception("Missing schema name.");
         }
     }
 }
