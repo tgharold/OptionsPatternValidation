@@ -356,3 +356,5 @@ MigrationBackup/
 examples/OptionsPatternMvc.Dapper/*.db
 
 
+
+examples/OptionsPatternMvc.Example/OpvExample1.db
