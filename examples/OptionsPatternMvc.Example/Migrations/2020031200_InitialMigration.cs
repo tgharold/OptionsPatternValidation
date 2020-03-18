@@ -16,7 +16,7 @@ namespace OptionsPatternMvc.Example.Migrations
             Create
                 .Table("WeatherForecasts")
                 .InSchema(SchemaName)
-                .WithColumn("Id").AsInt32().PrimaryKey().NotNullable()
+                .WithColumn("Id").AsInt32().Identity().PrimaryKey().NotNullable()
                 .WithColumn("ForecastTime").AsDateTime().NotNullable()
                 .WithColumn("Date").AsDate().NotNullable()
                 .WithColumn("TemperatureC").AsInt32().NotNullable()

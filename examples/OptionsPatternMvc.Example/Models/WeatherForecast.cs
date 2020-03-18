@@ -1,10 +1,12 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using OptionsPatternMvc.Example.Representations;
 
 namespace OptionsPatternMvc.Example.Models
 {
     public class WeatherForecast
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         
         public DateTime ForecastTime { get; set; }
