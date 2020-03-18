@@ -37,7 +37,7 @@ namespace OptionsPatternMvc.Example.Controllers
 
             var forecastDates = Enumerable
                 .Range(1, 5)
-                .Select(index => DateTime.Now.AddDays(index))
+                .Select(index => DateTime.Now.AddDays(index).Date)
                 .ToList();
             
             var forecasts = await _weatherForecastService.GetForecastAsync(forecastDates);
