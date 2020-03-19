@@ -1,5 +1,6 @@
 using System;
 using System.Data.Entity.Infrastructure;
+using System.Data.SQLite;
 using Microsoft.Extensions.Options;
 using OptionsPatternMvc.Example.Settings;
 
@@ -21,7 +22,9 @@ namespace OptionsPatternMvc.Example.Database
             if (string.IsNullOrEmpty(connectionString)) 
                 throw new Exception("Missing connection string.");
             
-            return new WeatherForecastContext(connectionString);
+            var connection = new SQLiteConnection(connectionString);
+            
+            return new WeatherForecastContext(connection);
         }
     }
 }
