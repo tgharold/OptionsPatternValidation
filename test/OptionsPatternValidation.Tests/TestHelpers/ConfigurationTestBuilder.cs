@@ -1,5 +1,7 @@
 using System;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 namespace OptionsPatternValidation.Tests.TestHelpers
 {
@@ -21,18 +23,21 @@ namespace OptionsPatternValidation.Tests.TestHelpers
             return configuration;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        public static IConfiguration BuildFromFile(string fileName)
+        public static IConfiguration BuildFromEmbeddedResource(string fileName)
         {
+            IConfiguration configuration;
+            
             if (fileName is null) throw new ArgumentNullException(nameof(fileName));
             
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile(fileName);
+            var embeddedProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
+            using (var stream = embeddedProvider.GetFileInfo(fileName).CreateReadStream())
+            {
+                var builder = new ConfigurationBuilder()
+                    .AddJsonStream(stream);
+                configuration = builder.Build();
+            }
 
-            return builder.Build();
+            return configuration;
         }
     }
 }
