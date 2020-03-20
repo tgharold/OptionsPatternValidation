@@ -11,7 +11,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
     public class AddSettingsTests
     {
         [Fact]
-        public void Wires_up_SimpleAttributeValidatedSettings_from_string()
+        public void Wires_up_SimpleSettings_from_string()
         {
             var services = new ServiceCollection();
 
@@ -36,7 +36,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
         }
         
         [Fact]
-        public void Wires_up_SimpleAttributeValidatedSettings_from_Test1_file()
+        public void Wires_up_SimpleSettings_from_Test1_file()
         {
             var services = new ServiceCollection();
 
@@ -49,6 +49,22 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
 
             Assert.NotNull(result);
             Assert.Equal(89458, result.IntegerA);
+        }
+        
+        [Fact]
+        public void Wires_up_SimpleSettings_from_Test2_file()
+        {
+            var services = new ServiceCollection();
+
+            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(JsonIndex.AddSettingsTest2);
+            
+            services.AddSettings<SimpleSettings>(configuration);
+
+            var serviceProvider = services.BuildServiceProvider();
+            var result = serviceProvider.GetRequiredService<IOptions<SimpleSettings>>().Value;
+
+            Assert.NotNull(result);
+            Assert.Equal(89, result.IntegerA);
         }
     }
 }

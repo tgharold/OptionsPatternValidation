@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsPatternValidation.Tests.TestHelpers;
@@ -38,7 +39,26 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
         }
         
         [Fact]
-        public void Wires_up_SimpleAttributeValidatedSettings_from_Test1_file()
+        public void Catches_validation_error_for_Test1_file()
+        {
+            var services = new ServiceCollection();
+            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(JsonIndex.AddSettingsTest1);
+            services.AddValidatedSettings<SimpleAttributeValidatedSettings>(configuration);
+            var serviceProvider = services.BuildServiceProvider();
+
+            // this call will work, because we're just getting the accessor singleton
+            var optionsAccessor = serviceProvider.GetRequiredService<IOptions<SimpleAttributeValidatedSettings>>();
+            Action act = () =>
+            {
+                var result = optionsAccessor.Value;
+            };
+            
+            var exception = Assert.Throws<OptionsValidationException>(act);
+            Assert.StartsWith("Validation failed for members: 'IntegerA'", exception.Message);
+        }
+
+        [Fact]
+        public void Wires_up_SimpleAttributeValidatedSettings_from_Test2_file()
         {
             var services = new ServiceCollection();
 
