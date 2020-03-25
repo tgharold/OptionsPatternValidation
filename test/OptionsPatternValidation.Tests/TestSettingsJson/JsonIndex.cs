@@ -2,9 +2,9 @@ namespace OptionsPatternValidation.Tests.TestSettingsJson
 {
     public static class JsonIndex
     {
-        //NOTE: All files must be "EmbeddedResource" files
+        // NOTE: All files must be "EmbeddedResource" files
 
-        /// <summary>JSON for the SimpleSettings class.</summary>
+        /// <summary>JSON for the SimpleSettings class.  None of these have validation.</summary>
         public static class Unvalidated
         {
             public const string Test1 = "TestSettingsJson.Unvalidated.SimpleSettings1.json";

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsPatternValidation.Tests.TestHelpers;
-using OptionsPatternValidation.Tests.TestSettings;
+using OptionsPatternValidation.Tests.TestSettings.Unvalidated;
 using OptionsPatternValidation.Tests.TestSettingsJson;
 using Xunit;
 
@@ -38,7 +38,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
         [Theory]
         [InlineData(JsonIndex.Unvalidated.Test1, 89458)]
         [InlineData(JsonIndex.Unvalidated.Test2, 892)]
-        public void Wires_up_SimpleSettings_from_Test1_file(string filename, int integerA)
+        public void Wires_up_SimpleSettings_from_json_files(string filename, int integerA)
         {
             var services = new ServiceCollection();
             var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(filename);
