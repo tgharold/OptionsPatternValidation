@@ -1,4 +1,4 @@
-namespace OptionsPatternValidation.Tests.TestSettings
+namespace OptionsPatternValidation.Tests.TestSettings.Unvalidated
 {
     [SettingsSectionName("Simple")]
     public class SimpleSettings

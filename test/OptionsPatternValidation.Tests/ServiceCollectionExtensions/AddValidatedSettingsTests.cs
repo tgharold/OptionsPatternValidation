@@ -2,7 +2,6 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsPatternValidation.Tests.TestHelpers;
-using OptionsPatternValidation.Tests.TestSettings;
 using OptionsPatternValidation.Tests.TestSettings.AttributeValidation;
 using OptionsPatternValidation.Tests.TestSettingsJson;
 using Xunit;
@@ -13,14 +12,14 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
     public class AddValidatedSettingsTests
     {
         [Fact]
-        public void Wires_up_SimpleAttributeValidatedSettings_from_string()
+        public void Wires_up_settings_from_string()
         {
             var services = new ServiceCollection();
 
             
             const string json = @"
 {
-""Simple"": {
+""AttributeValidated"": {
     ""IntegerA"": 76,
     ""BooleanB"": true
   }
@@ -29,25 +28,31 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
 
             var configuration = ConfigurationTestBuilder.BuildFromJsonString(json);
             
-            services.AddValidatedSettings<SimpleAttributeValidatedSettings>(configuration);
+            services.AddValidatedSettings<AttributeValidatedSettings>(configuration);
 
             var serviceProvider = services.BuildServiceProvider();
-            var result = serviceProvider.GetRequiredService<IOptions<SimpleAttributeValidatedSettings>>().Value;
+            var result = serviceProvider.GetRequiredService<IOptions<AttributeValidatedSettings>>().Value;
 
             Assert.NotNull(result);
             Assert.Equal(76, result.IntegerA);
+            Assert.True(result.BooleanB);
         }
         
         [Fact]
         public void Catches_validation_error_for_Test1_file()
         {
             var services = new ServiceCollection();
-            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(JsonIndex.AddSettingsTest1);
-            services.AddValidatedSettings<SimpleAttributeValidatedSettings>(configuration);
+            
+            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(
+                JsonIndex.AttributeValidated.Test1);
+            
+            services.AddValidatedSettings<AttributeValidatedSettings>(configuration);
+            
             var serviceProvider = services.BuildServiceProvider();
 
             // this call will work, because we're just getting the accessor singleton
-            var optionsAccessor = serviceProvider.GetRequiredService<IOptions<SimpleAttributeValidatedSettings>>();
+            var optionsAccessor = serviceProvider.GetRequiredService<IOptions<AttributeValidatedSettings>>();
+            // the next call will throw an exception because we're accessing the .Value instance
             Action act = () =>
             {
                 var result = optionsAccessor.Value;
@@ -58,19 +63,21 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
         }
 
         [Fact]
-        public void Wires_up_SimpleAttributeValidatedSettings_from_Test2_file()
+        public void Wires_up_settings_from_Test2_file()
         {
             var services = new ServiceCollection();
 
-            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(JsonIndex.AddSettingsTest2);
+            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(
+                JsonIndex.AttributeValidated.Test2);
             
-            services.AddValidatedSettings<SimpleAttributeValidatedSettings>(configuration);
+            services.AddValidatedSettings<AttributeValidatedSettings>(configuration);
 
             var serviceProvider = services.BuildServiceProvider();
-            var result = serviceProvider.GetRequiredService<IOptions<SimpleAttributeValidatedSettings>>().Value;
+            var result = serviceProvider.GetRequiredService<IOptions<AttributeValidatedSettings>>().Value;
 
             Assert.NotNull(result);
-            Assert.Equal(89, result.IntegerA);
+            Assert.Equal(92, result.IntegerA);
+            Assert.False(result.BooleanB);
         }
     }
 }

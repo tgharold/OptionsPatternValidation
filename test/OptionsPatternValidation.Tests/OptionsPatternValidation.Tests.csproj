@@ -26,6 +26,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="TestSettingsJson\*.json" />
+    <EmbeddedResource Include="TestSettingsJson\AttributeValidated\Test1.json" />
+    <EmbeddedResource Include="TestSettingsJson\AttributeValidated\Test2.json" />
+    <EmbeddedResource Include="TestSettingsJson\Unvalidated\SimpleSettings1.json" />
+    <EmbeddedResource Include="TestSettingsJson\Unvalidated\SimpleSettings2.json" />
   </ItemGroup>
 
 </Project>
