@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -14,7 +13,7 @@ namespace OptionsPatternValidation
             IConfiguration configuration
             ) where T : class
         {
-            var sectionName = GetSettingsSectionName<T>();
+            var sectionName = SettingsSectionNameAttribute.GetSettingsSectionName<T>();
             
             var configurationSection = configuration.GetSection(sectionName);
             
@@ -31,7 +30,7 @@ namespace OptionsPatternValidation
             IConfiguration configuration
             ) where T : class
         {
-            var sectionName = GetSettingsSectionName<T>();
+            var sectionName = SettingsSectionNameAttribute.GetSettingsSectionName<T>();
             
             var configurationSection = configuration.GetSection(sectionName);
             
@@ -51,7 +50,7 @@ namespace OptionsPatternValidation
             where T : class, new()
             where TValidator : class, IValidateOptions<T>
         {
-            var sectionName = GetSettingsSectionName<T>();
+            var sectionName = SettingsSectionNameAttribute.GetSettingsSectionName<T>();
 
             var configurationSection = configuration.GetSection(sectionName);
 
@@ -62,14 +61,6 @@ namespace OptionsPatternValidation
 
             return services;
         }
-        
-        /// <summary>Get the section name within appsettings.json.  If the SettingsSectionNameAttribute
-        /// is present, use that as the section name in the JSON.  Otherwise fall back to the type name.
-        /// </summary>
-        private static string GetSettingsSectionName<T>() where T : class
-        {
-            return typeof(T).GetCustomAttribute<SettingsSectionNameAttribute>()?.SectionName
-                   ?? typeof(T).Name;
-        }
+
     }
 }

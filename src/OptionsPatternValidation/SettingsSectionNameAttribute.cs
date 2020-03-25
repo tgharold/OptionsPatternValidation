@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace OptionsPatternValidation
 {
@@ -13,5 +14,15 @@ namespace OptionsPatternValidation
         }
         
         public string SectionName { get; }
+        
+        
+        /// <summary>Get the section name within appsettings.json.  If the SettingsSectionNameAttribute
+        /// is present, use that as the section name in the JSON.  Otherwise fall back to the type name.
+        /// </summary>
+        internal static string GetSettingsSectionName<T>() where T : class
+        {
+            return typeof(T).GetCustomAttribute<SettingsSectionNameAttribute>()?.SectionName
+                ?? typeof(T).Name;
+        }        
     }
 }
