@@ -23,6 +23,8 @@ namespace OptionsPatternValidation.Tests.TestHelpers
             return configuration;
         }
 
+        /// <summary>Constructs an IConfiguration where the resource comes from an embedded
+        /// JSON file in the test project.</summary>
         public static IConfiguration BuildFromEmbeddedResource(string fileName)
         {
             IConfiguration configuration;

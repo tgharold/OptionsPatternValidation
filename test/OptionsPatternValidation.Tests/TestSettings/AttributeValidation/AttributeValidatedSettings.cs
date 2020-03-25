@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OptionsPatternValidation.Tests.TestSettings.AttributeValidation
 {
-    [SettingsSectionName("Simple")]
-    public class SimpleAttributeValidatedSettings
+    [SettingsSectionName("AttributeValidated")]
+    public class AttributeValidatedSettings
     {
         [Required, Range(1, 100)]
         public int? IntegerA { get; set; }
