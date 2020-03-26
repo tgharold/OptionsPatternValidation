@@ -8,11 +8,13 @@ namespace OptionsPatternValidation
     [AttributeUsage(AttributeTargets.Class)]
     public class SettingsSectionNameAttribute : Attribute
     {
+        /// <summary>Constructor.</summary>
         public SettingsSectionNameAttribute(string sectionName)
         {
             SectionName = sectionName;
         }
-        
+
+        /// <summary>The JSON key name for the section.</summary>
         public string SectionName { get; }
         
         

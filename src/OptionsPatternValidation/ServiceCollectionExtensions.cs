@@ -6,6 +6,7 @@ using OptionsPatternValidation.ValidationOptions;
 
 namespace OptionsPatternValidation
 {
+    /// <summary>Extensions for IServiceCollection to help wiring up POCOs for the options pattern.</summary>
     public static class ServiceCollectionExtensions
     {
         /// <summary>Bind a section of the appsettings.json to an options pattern POCO without validation.</summary>
