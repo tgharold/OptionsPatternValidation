@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using OptionsPatternValidation.Tests.Helpers;
 using OptionsPatternValidation.Tests.Json;
 using OptionsPatternValidation.Tests.Settings.AttributeValidation;
+using OptionsPatternValidation.Tests.Settings.Unvalidated;
 using Xunit;
 
 namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
@@ -36,6 +37,25 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
             Assert.NotNull(result);
             Assert.Equal(76, result.IntegerA);
             Assert.True(result.BooleanB);
+        }
+
+        /// <summary>Demonstrate that AddValidatedSettings can work with POCOs that have no 
+        /// DataAnnotation validation attributes on any properties.</summary>
+        [Theory]
+        [InlineData(JsonIndex.Unvalidated.Test1, 89458)]
+        [InlineData(JsonIndex.Unvalidated.Test2, 892)]
+        public void Wires_up_SimpleSettings_from_json_files(string filename, int integerA)
+        {
+            var services = new ServiceCollection();
+            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(filename);
+
+            services.AddValidatedSettings<SimpleSettings>(configuration);
+
+            var serviceProvider = services.BuildServiceProvider();
+            var result = serviceProvider.GetRequiredService<IOptions<SimpleSettings>>().Value;
+
+            Assert.NotNull(result);
+            Assert.Equal(integerA, result.IntegerA);
         }
         
         [Fact]
