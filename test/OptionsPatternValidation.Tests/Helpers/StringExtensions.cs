@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace OptionsPatternValidation.Tests.TestHelpers
+namespace OptionsPatternValidation.Tests.Helpers
 {
     public static class StringExtensions
     {

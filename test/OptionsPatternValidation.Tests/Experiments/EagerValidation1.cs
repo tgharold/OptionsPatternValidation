@@ -1,13 +1,11 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using OptionsPatternValidation.Extensions;
-using OptionsPatternValidation.Tests.TestHelpers;
-using OptionsPatternValidation.Tests.TestSettings;
-using OptionsPatternValidation.Tests.TestSettings.AttributeValidation;
-using OptionsPatternValidation.Tests.TestSettingsJson;
+using OptionsPatternValidation.Tests.Helpers;
+using OptionsPatternValidation.Tests.Json;
+using OptionsPatternValidation.Tests.Settings.AttributeValidation;
 using OptionsPatternValidation.ValidationOptions;
 using Xunit;
 

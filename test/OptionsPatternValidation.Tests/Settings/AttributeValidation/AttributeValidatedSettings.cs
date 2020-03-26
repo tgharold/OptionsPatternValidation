@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OptionsPatternValidation.Tests.TestSettings.AttributeValidation
+namespace OptionsPatternValidation.Tests.Settings.AttributeValidation
 {
+    /// <summary>This POCO tests out DataAnnotation validation and every
+    /// property should have some form of validation attribute.</summary>
     [SettingsSectionName("AttributeValidated")]
     public class AttributeValidatedSettings
     {

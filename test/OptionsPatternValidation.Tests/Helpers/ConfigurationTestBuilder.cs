@@ -3,7 +3,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
-namespace OptionsPatternValidation.Tests.TestHelpers
+namespace OptionsPatternValidation.Tests.Helpers
 {
     public static class ConfigurationTestBuilder
     {
