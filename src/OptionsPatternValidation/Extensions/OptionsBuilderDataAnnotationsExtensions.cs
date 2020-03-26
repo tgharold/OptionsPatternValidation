@@ -4,7 +4,7 @@ using OptionsPatternValidation.ValidationOptions;
 
 namespace OptionsPatternValidation.Extensions
 {
-    public static class OptionsBuilderDataAnnotationsExtensions
+    internal static class OptionsBuilderDataAnnotationsExtensions
     {
         /// <summary>First layer of the bridge between IServiceCollectionExtensions
         /// and the recursive DataAnnotations validator.</summary>
