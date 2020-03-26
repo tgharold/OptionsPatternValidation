@@ -75,7 +75,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
             // the next call will throw an exception because we're accessing the .Value instance
             Action act = () =>
             {
-                var result = optionsAccessor.Value;
+                var _ = optionsAccessor.Value;
             };
             
             var exception = Assert.Throws<OptionsValidationException>(act);
