@@ -12,6 +12,9 @@ Extension methods (on `IServiceCollection`) that make it easier to wire up `IOpt
     - [No validation](#no-validation)
     - [DataAnnotation validation](#dataannotation-validation)
     - [IValidateOptions](#ivalidateoptions)
+  - [Experimental](#experimental)
+    - [AddEagerlyValidatedSettings<T>(config, out x)](#addeagerlyvalidatedsettingstconfig-out-x)
+      - [Caveats:](#caveats)
 - [Build Status](#build-status)
 - [Nuget Page](#nuget-page)
 - [Legacy](#legacy)
@@ -32,7 +35,7 @@ For most use cases where you want validation, I suggest using the [DataAnnotatio
 
 ## Create POCOs
 
-Each "section" (top level) of your appsettings.json file will need its own POCO.  This is true no matter which validation approach you use.  If the POCO class is not identical to the appsettings.json section name, you can use the `[SettingsSectionNameAttribute("section-name")]` attribute on the POCO class definition to do the mapping.
+Each "section" (top level) of your appsettings.json file will need its own POCO.  This is true no matter which validation approach you use.  If the POCO class is not identical to the appsettings.json section name, you can use the `[SettingsSectionNameAttribute("section-name")]` attribute on the POCO class definition to set the mapping.
 
 ## Choose a validation
 
@@ -57,6 +60,21 @@ This approach requires two classes.  One is the POCO for the settings.  The othe
     services.AddValidatedSettings<ExampleAppSettings, ExampleAppSettingsValidator>(Configuration);
 
 The `IValidationOptions<T>` approach is really powerful, but also tedious to use.
+
+## Experimental
+
+### AddEagerlyValidatedSettings<T>(config, out x)
+
+There is now an experimental extension method that will eagerly validate the object and also return a reference to the POCO.  
+
+    services.AddEagerlyValidatedSettings<ExampleAppSettings>(Configuration, out var exampleAppSettings);
+
+This method is useful where a particular software package does not properly support being wired up via IoC in .NET Core.  A symptom of this is where the package expects you to create a settings/options object and pass it into its extension method in `Startup.ConfigureServices()`.
+
+#### Caveats:
+
+- Settings are only bound once from the configuration file at startup.
+- The `IOptionsMonitor<T>` will not notice when the underlying configuration values change.
 
 # Build Status
 
