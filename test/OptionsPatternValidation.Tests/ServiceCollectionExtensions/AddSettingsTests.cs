@@ -53,6 +53,8 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
             Assert.Equal(integerA, result.IntegerA);
         }
         
+        /// <summary>Demonstrate that AddSettings() can work with POCOs that are decorated
+        /// with DataAnnotation validation attributes.</summary>
         [Theory]
         [InlineData(JsonIndex.AttributeValidated.Test1, 87428)]
         [InlineData(JsonIndex.AttributeValidated.Test2, 92)]
