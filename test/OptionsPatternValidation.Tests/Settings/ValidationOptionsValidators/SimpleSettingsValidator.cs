@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
-using OptionsPatternValidation.Tests.TestSettings.Unvalidated;
+using OptionsPatternValidation.Tests.Settings.Unvalidated;
 
-namespace OptionsPatternValidation.Tests.TestSettings.ValidationOptionsValidators
+namespace OptionsPatternValidation.Tests.Settings.ValidationOptionsValidators
 {
     public class SimpleSettingsValidator : IValidateOptions<SimpleSettings>
     {

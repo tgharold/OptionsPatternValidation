@@ -1,8 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using OptionsPatternValidation.Tests.TestHelpers;
-using OptionsPatternValidation.Tests.TestSettings.Unvalidated;
-using OptionsPatternValidation.Tests.TestSettingsJson;
+using OptionsPatternValidation.Tests.Helpers;
+using OptionsPatternValidation.Tests.Json;
+using OptionsPatternValidation.Tests.Settings.AttributeValidation;
+using OptionsPatternValidation.Tests.Settings.Unvalidated;
 using Xunit;
 
 namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
@@ -47,6 +48,25 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
 
             var serviceProvider = services.BuildServiceProvider();
             var result = serviceProvider.GetRequiredService<IOptions<SimpleSettings>>().Value;
+
+            Assert.NotNull(result);
+            Assert.Equal(integerA, result.IntegerA);
+        }
+        
+        /// <summary>Demonstrate that AddSettings() can work with POCOs that are decorated
+        /// with DataAnnotation validation attributes.</summary>
+        [Theory]
+        [InlineData(JsonIndex.AttributeValidated.Test1, 87428)]
+        [InlineData(JsonIndex.AttributeValidated.Test2, 92)]
+        public void Wires_up_AttributeValidatedSettings_from_json_files(string filename, int integerA)
+        {
+            var services = new ServiceCollection();
+            var configuration = ConfigurationTestBuilder.BuildFromEmbeddedResource(filename);
+
+            services.AddSettings<AttributeValidatedSettings>(configuration);
+
+            var serviceProvider = services.BuildServiceProvider();
+            var result = serviceProvider.GetRequiredService<IOptions<AttributeValidatedSettings>>().Value;
 
             Assert.NotNull(result);
             Assert.Equal(integerA, result.IntegerA);

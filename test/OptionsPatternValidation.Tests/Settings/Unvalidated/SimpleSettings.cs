@@ -1,5 +1,6 @@
-namespace OptionsPatternValidation.Tests.TestSettings.Unvalidated
+namespace OptionsPatternValidation.Tests.Settings.Unvalidated
 {
+    /// <summary>This class has zero validation of anything.</summary>
     [SettingsSectionName("Simple")]
     public class SimpleSettings
     {
