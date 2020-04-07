@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
+using Dapper.Contrib.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OptionsPatternMvc.Dapper.Models;
@@ -20,27 +21,34 @@ namespace OptionsPatternMvc.Dapper.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly Random _random;
+        private readonly IDbConnection _connection;
 
         public WeatherForecastController(
             ILogger<WeatherForecastController> logger,
-            Random random
+            Random random,
+            IDbConnection connection
             )
         {
             _logger = logger;
             _random = random;
+            _connection = connection;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecastRepresentation> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecastRepresentation
+            var forecasts = Enumerable.Range(1, 5)
+                .Select(index =>
+                    CreateForecastForDay(DateTime.Now.AddDays(index).Date)
+                )
+                .ToArray();
+            
+            foreach (var forecast in forecasts)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                _connection.Insert(forecast);
+            }
+
+            return forecasts.Select(x => x.ToRepresentation());
         }
         
         private WeatherForecast CreateForecastForDay(DateTime date)
