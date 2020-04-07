@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,8 @@ namespace OptionsPatternMvc.Dapper
             services.AddValidatedSettings<DatabaseSettings>(_configuration);
 
             services.AddOpvDapperFluentMigrator();
+
+            services.AddSingleton<Random>();
             
             services.AddControllers();
         }
