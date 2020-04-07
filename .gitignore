@@ -351,3 +351,8 @@ MigrationBackup/
 
 # JetBrains
 .idea/
+
+# ignore some debugging artifacts
+examples/OptionsPatternMvc.Dapper/*.db
+
+
