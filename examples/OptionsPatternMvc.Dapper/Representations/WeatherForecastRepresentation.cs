@@ -1,8 +1,8 @@
 using System;
 
-namespace OptionsPatternMvc.Dapper
+namespace OptionsPatternMvc.Dapper.Representations
 {
-    public class WeatherForecast
+    public class WeatherForecastRepresentation
     {
         public DateTime Date { get; set; }
 
@@ -11,5 +11,7 @@ namespace OptionsPatternMvc.Dapper
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
         public string Summary { get; set; }
+        
+        public DateTime ForecastTime { get; set; }
     }
 }
