@@ -4,17 +4,31 @@ using OptionsPatternMvc.Examples.EF6.Settings;
 
 namespace OptionsPatternMvc.Examples.EF6.Database
 {
-    public class OpvExample1VersionTableMetaData : DefaultVersionTableMetaData
+    public class OpvExample1VersionTableMetaData : IVersionTableMetaData
     {
-        private readonly IOptionsMonitor<DatabaseSettings> _databaseSettingsAccessor;
+        private readonly IOptions<DatabaseSettings> _databaseSettingsAccessor;
 
         public OpvExample1VersionTableMetaData(
-            IOptionsMonitor<DatabaseSettings> databaseSettingsAccessor
+            IOptions<DatabaseSettings> databaseSettingsAccessor
             )
         {
             _databaseSettingsAccessor = databaseSettingsAccessor;
         }
 
-        public override string SchemaName => _databaseSettingsAccessor.CurrentValue.SchemaNames.OpvExample1;
+        public object ApplicationContext { get; set; }
+        
+        public bool OwnsSchema => true;
+
+        public string SchemaName => _databaseSettingsAccessor.Value.SchemaNames.OpvExample1;
+
+        public string TableName => "VersionInfo";
+        
+        public string ColumnName => "Version";
+        
+        public string DescriptionColumnName => "Description";
+        
+        public string UniqueIndexName => "UC_Version";
+        
+        public string AppliedOnColumnName => "AppliedOn";
     }
 }
