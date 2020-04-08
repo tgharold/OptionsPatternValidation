@@ -22,6 +22,6 @@ namespace OptionsPatternMvc.Examples.EF6.Database
             return _connectionStringSettings.OpvExample1;
         }
 
-        public int Priority { get; } = 1;
+        public int Priority { get; } = 1000;
     }
 }
