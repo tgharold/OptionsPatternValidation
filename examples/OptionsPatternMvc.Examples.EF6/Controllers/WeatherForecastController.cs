@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OptionsPatternMvc.Example.Representations;
-using OptionsPatternMvc.Example.Services;
-using OptionsPatternMvc.Example.Settings;
+using OptionsPatternMvc.Examples.EF6.Representations;
+using OptionsPatternMvc.Examples.EF6.Services;
+using OptionsPatternMvc.Examples.EF6.Settings;
 
-namespace OptionsPatternMvc.Example.Controllers
+namespace OptionsPatternMvc.Examples.EF6.Controllers
 {
     [ApiController]
     [Route("[controller]")]

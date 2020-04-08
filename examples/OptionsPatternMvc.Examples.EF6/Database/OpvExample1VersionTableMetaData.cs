@@ -1,8 +1,8 @@
 using FluentMigrator.Runner.VersionTableInfo;
 using Microsoft.Extensions.Options;
-using OptionsPatternMvc.Example.Settings;
+using OptionsPatternMvc.Examples.EF6.Settings;
 
-namespace OptionsPatternMvc.Example.Database
+namespace OptionsPatternMvc.Examples.EF6.Database
 {
     public class OpvExample1VersionTableMetaData : DefaultVersionTableMetaData
     {

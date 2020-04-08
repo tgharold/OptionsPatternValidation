@@ -1,8 +1,8 @@
 using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.Options;
-using OptionsPatternMvc.Example.Settings;
+using OptionsPatternMvc.Examples.EF6.Settings;
 
-namespace OptionsPatternMvc.Example.Database
+namespace OptionsPatternMvc.Examples.EF6.Database
 {
     /// <summary>This provides the FluentMigrator runner with a way to get the connection string.</summary>
     public class OpvExample1ConnectionStringReader : IConnectionStringReader

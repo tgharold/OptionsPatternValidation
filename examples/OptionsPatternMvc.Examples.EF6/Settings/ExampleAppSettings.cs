@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using OptionsPatternValidation;
 
-namespace OptionsPatternMvc.Example.Settings
+namespace OptionsPatternMvc.Examples.EF6.Settings
 {
     [SettingsSectionName("Example")]
     public class ExampleAppSettings

@@ -1,9 +1,9 @@
 using System;
 using FluentMigrator;
 using Microsoft.Extensions.Options;
-using OptionsPatternMvc.Example.Settings;
+using OptionsPatternMvc.Examples.EF6.Settings;
 
-namespace OptionsPatternMvc.Example.Migrations.Base
+namespace OptionsPatternMvc.Examples.EF6.Migrations.Base
 {
     public abstract class OpvExampleMigration : ForwardOnlyMigration
     {

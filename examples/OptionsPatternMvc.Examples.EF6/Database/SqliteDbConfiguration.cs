@@ -3,7 +3,7 @@ using System.Data.Entity.Core.Common;
 using System.Data.SQLite;
 using System.Data.SQLite.EF6;
 
-namespace OptionsPatternMvc.Example.Database
+namespace OptionsPatternMvc.Examples.EF6.Database
 {
     public class SqliteDbConfiguration : DbConfiguration
     {

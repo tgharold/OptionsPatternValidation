@@ -1,10 +1,10 @@
 using System;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
-using OptionsPatternMvc.Example.Migrations;
+using OptionsPatternMvc.Examples.EF6.Migrations;
 using Xunit;
 
-namespace OptionsPatternMvc.Example.Tests.Migrations
+namespace OptionsPatternMvc.Examples.EF6.Tests.Migrations
 {
     public class MigrationsTests
     {

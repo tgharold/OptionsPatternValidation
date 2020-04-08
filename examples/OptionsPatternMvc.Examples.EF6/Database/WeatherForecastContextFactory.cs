@@ -2,9 +2,9 @@ using System;
 using System.Data.Entity.Infrastructure;
 using System.Data.SQLite;
 using Microsoft.Extensions.Options;
-using OptionsPatternMvc.Example.Settings;
+using OptionsPatternMvc.Examples.EF6.Settings;
 
-namespace OptionsPatternMvc.Example.Database
+namespace OptionsPatternMvc.Examples.EF6.Database
 {
     public class WeatherForecastContextFactory : IDbContextFactory<WeatherForecastContext>
     {

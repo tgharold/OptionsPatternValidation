@@ -1,9 +1,9 @@
 using FluentMigrator;
 using Microsoft.Extensions.Options;
-using OptionsPatternMvc.Example.Migrations.Base;
-using OptionsPatternMvc.Example.Settings;
+using OptionsPatternMvc.Examples.EF6.Migrations.Base;
+using OptionsPatternMvc.Examples.EF6.Settings;
 
-namespace OptionsPatternMvc.Example.Migrations
+namespace OptionsPatternMvc.Examples.EF6.Migrations
 {
     [Migration(2020031200)]
     public class InitialMigration : OpvExampleMigration

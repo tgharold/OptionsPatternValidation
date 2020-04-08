@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using OptionsPatternMvc.Example.Database;
-using OptionsPatternMvc.Example.Models;
+using OptionsPatternMvc.Examples.EF6.Database;
+using OptionsPatternMvc.Examples.EF6.Models;
 
-namespace OptionsPatternMvc.Example.Services
+namespace OptionsPatternMvc.Examples.EF6.Services
 {
     public class WeatherForecastService
     {

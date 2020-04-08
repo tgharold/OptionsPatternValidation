@@ -1,8 +1,8 @@
 using System.Data.Entity;
 using System.Data.SQLite;
-using OptionsPatternMvc.Example.Models;
+using OptionsPatternMvc.Examples.EF6.Models;
 
-namespace OptionsPatternMvc.Example.Database
+namespace OptionsPatternMvc.Examples.EF6.Database
 {
     [DbConfigurationType(typeof(SqliteDbConfiguration))]
     public class WeatherForecastContext : DbContext

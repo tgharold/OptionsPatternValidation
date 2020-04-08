@@ -7,13 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using OptionsPatternMvc.Example.Database;
-using OptionsPatternMvc.Example.Migrations;
-using OptionsPatternMvc.Example.Services;
-using OptionsPatternMvc.Example.Settings;
+using OptionsPatternMvc.Examples.EF6.Database;
+using OptionsPatternMvc.Examples.EF6.Migrations;
+using OptionsPatternMvc.Examples.EF6.Services;
+using OptionsPatternMvc.Examples.EF6.Settings;
 using OptionsPatternValidation;
 
-namespace OptionsPatternMvc.Example
+namespace OptionsPatternMvc.Examples.EF6
 {
     public class Startup
     {

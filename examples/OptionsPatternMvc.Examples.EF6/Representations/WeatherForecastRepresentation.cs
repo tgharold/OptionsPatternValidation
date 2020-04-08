@@ -1,6 +1,6 @@
 using System;
 
-namespace OptionsPatternMvc.Example.Representations
+namespace OptionsPatternMvc.Examples.EF6.Representations
 {
     public class WeatherForecastRepresentation
     {

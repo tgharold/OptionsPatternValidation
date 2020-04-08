@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace OptionsPatternMvc.Example
+namespace OptionsPatternMvc.Examples.EF6
 {
     public class Program
     {

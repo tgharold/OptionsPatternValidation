@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using OptionsPatternMvc.Example.Representations;
+using OptionsPatternMvc.Examples.EF6.Representations;
 
-namespace OptionsPatternMvc.Example.Models
+namespace OptionsPatternMvc.Examples.EF6.Models
 {
     public class WeatherForecast
     {
