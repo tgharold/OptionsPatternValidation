@@ -4,20 +4,17 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>  
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\OptionsPatternValidation\OptionsPatternValidation.csproj" />
-  </ItemGroup>  
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.0" />
     <PackageReference Include="FluentMigrator.Runner" Version="3.2.4" />
     <PackageReference Include="FluentMigrator.Runner.Core" Version="3.2.4" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112.1" />
-    <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.112" />
+    <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.112.1" />
   </ItemGroup>
+
 
 </Project>

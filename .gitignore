@@ -354,5 +354,4 @@ MigrationBackup/
 
 # ignore some debugging artifacts
 examples/OptionsPatternMvc.Dapper/*.db
-
-
+examples/OptionsPatternMvc.Examples.EF6/*.db
