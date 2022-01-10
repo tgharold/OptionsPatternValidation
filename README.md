@@ -71,7 +71,11 @@ There is now an experimental extension method that will eagerly validate the obj
 
 This method is useful where a particular software package does not properly support being wired up via IoC in .NET Core.  A symptom of this is where the package expects you to create a settings/options object and pass it into its extension method in `Startup.ConfigureServices()`.
 
-#### Caveats:
+NOTE: There is a better method for application startup when you just want a snapshot of the configuration.  It does not register an `IOptions<T>` instances in the DI provider.
+
+    var appSettings = Configuration.GetValidatedConfigurationSection<ExampleAppSettings>();
+                        
+#### AddEagerlyValidatedSettings Caveats:
 
 - Settings are only bound once from the configuration file at startup.
 - The `IOptionsMonitor<T>` will not notice when the underlying configuration values change.
