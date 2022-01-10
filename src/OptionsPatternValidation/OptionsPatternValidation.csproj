@@ -18,7 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.20" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.20" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.20" />
-    <PackageReference Include="RecursiveDataAnnotationsValidation" Version="1.0.0" />
+    <PackageReference Include="RecursiveDataAnnotationsValidation" Version="1.1.0" />
   </ItemGroup>
 
 </Project>
