@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,9 @@ namespace OptionsPatternMvc.Example
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddValidatedSettings<ExampleAppSettings>(Configuration);
+
+            var directExampleAppSettings = Configuration.GetValidatedConfigurationSection<ExampleAppSettings>();
+            Console.WriteLine($"Name={directExampleAppSettings.Name}");
             
             services.AddControllers();
         }
