@@ -63,7 +63,7 @@ namespace OptionsPatternValidation
 
         /// <summary><para>Bind a section of the appsettings.json to an options pattern POCO along
         /// with wiring up recursively-validated DataAnnotation validation.  It will immediately
-        /// validate the POCO after binding and throw an exception if validation fails.</para>
+        /// validate the POCO and throw an exception if validation fails.</para>
         /// <para>This method outputs a reference to the POCO, loaded with setting values
         /// at the time of registration.  This reference should be the same as the reference
         /// that you get back later from the IOptions.Value call.</para>
@@ -79,9 +79,7 @@ namespace OptionsPatternValidation
             out T outputOptions
             ) where T : class, new()
         {
-            var sectionName = SettingsSectionNameAttribute.GetSettingsSectionName<T>();
-            var configurationSection = configuration.GetSection(sectionName);
-            var settings = configurationSection.Get<T>();
+            var settings = configuration.GetValidatedConfigurationSection<T>();
             
             var options = Options.Create(settings);
             
@@ -90,15 +88,6 @@ namespace OptionsPatternValidation
                 new RecursiveDataAnnotationValidateOptions<T>(
                     null
                 ));
-
-            var validator = new RecursiveDataAnnotationValidateOptions<T>(null);
-            var validateOptionsResult = validator.Validate(null, options.Value);
-            if (validateOptionsResult.Failed)
-                throw new OptionsValidationException(
-                    $"Section: {sectionName}",
-                    typeof(T),
-                    validateOptionsResult.Failures
-                    );
             
             outputOptions = options.Value;
             
