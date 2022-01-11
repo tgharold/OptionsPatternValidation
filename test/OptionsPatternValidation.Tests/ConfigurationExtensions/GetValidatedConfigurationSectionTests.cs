@@ -12,8 +12,6 @@ namespace OptionsPatternValidation.Tests.ConfigurationExtensions
         [Fact]
         public void Wires_up_settings_from_string()
         {
-            var services = new ServiceCollection();
-            
             const string json = @"
 {
 ""AttributeValidated"": {
@@ -27,8 +25,6 @@ namespace OptionsPatternValidation.Tests.ConfigurationExtensions
 
             var result = configuration.GetValidatedConfigurationSection<AttributeValidatedSettings>();
             
-            services.AddValidatedSettings<AttributeValidatedSettings>(configuration);
-
             Assert.NotNull(result);
             Assert.Equal(53, result.IntegerA);
             Assert.False(result.BooleanB);
@@ -37,8 +33,6 @@ namespace OptionsPatternValidation.Tests.ConfigurationExtensions
         [Fact]
         public void Catches_validation_error_from_string()
         {
-            var services = new ServiceCollection();
-            
             const string json = @"
 {
 ""AttributeValidated"": {
@@ -57,6 +51,28 @@ namespace OptionsPatternValidation.Tests.ConfigurationExtensions
 
             var exception = Assert.Throws<OptionsValidationException>(Act);
             Assert.StartsWith("Validation failed for members: 'IntegerA'", exception.Message);
+        }
+        
+        [Fact]
+        public void If_section_not_in_configuration_new_up_the_object()
+        {
+            const string json = @"
+{
+""AttributeValidated"": {
+    ""IntegerA"": 73,
+    ""BooleanB"": false
+  }
+}
+                ";
+
+            var configuration = ConfigurationTestBuilder.BuildFromJsonString(json);
+
+            var result = configuration.GetValidatedConfigurationSection<AttributeValidatedWithDefaults>();
+            
+            Assert.NotNull(result);
+            Assert.Equal(35, result.IntegerA);
+            Assert.True(result.BooleanB);
+            Assert.NotEmpty(result.ConnectionString);
         }
     }
 }

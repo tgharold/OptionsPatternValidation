@@ -16,11 +16,11 @@ namespace OptionsPatternValidation
         /// <exception cref="OptionsValidationException">The set of validation failures.</exception>
         public static T GetValidatedConfigurationSection<T>(
             this IConfiguration configuration
-            ) where T : class
+            ) where T : class, new()
         {
             var sectionName = SettingsSectionNameAttribute.GetSettingsSectionName<T>();
             var configurationSection = configuration.GetSection(sectionName);
-            var settings = configurationSection.Get<T>();
+            var settings = configurationSection.Get<T>() ?? new T();
             
             var validator = new RecursiveDataAnnotationValidateOptions<T>(null);
             var validateOptionsResult = validator.Validate(null, settings);

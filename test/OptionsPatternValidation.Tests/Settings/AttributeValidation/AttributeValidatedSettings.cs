@@ -12,5 +12,8 @@ namespace OptionsPatternValidation.Tests.Settings.AttributeValidation
         
         [Required]
         public bool? BooleanB { get; set; }
+        
+        [Required]
+        public string ConnectionString { get; set; } = "some-sensible-default";
     }
 }

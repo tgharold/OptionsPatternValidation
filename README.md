@@ -12,9 +12,9 @@ Extension methods (on `IServiceCollection`) that make it easier to wire up `IOpt
     - [No validation](#no-validation)
     - [DataAnnotation validation](#dataannotation-validation)
     - [IValidateOptions](#ivalidateoptions)
+  - [Accessing Configuration in Startup](#accessing-configuration-in-startup)
   - [Experimental](#experimental)
     - [AddEagerlyValidatedSettings<T>(config, out x)](#addeagerlyvalidatedsettingstconfig-out-x)
-      - [Caveats:](#caveats)
 - [Build Status](#build-status)
 - [Nuget Page](#nuget-page)
 - [Legacy](#legacy)
@@ -35,50 +35,55 @@ For most use cases where you want validation, I suggest using the [DataAnnotatio
 
 ## Create POCOs
 
-Each "section" (top level) of your appsettings.json file will need its own POCO.  This is true no matter which validation approach you use.  If the POCO class is not identical to the appsettings.json section name, you can use the `[SettingsSectionNameAttribute("section-name")]` attribute on the POCO class definition to set the mapping.
+Each "section" (top level) of your appsettings.json file will need its own POCO.  This is true no matter which validation approach you use.  If the POCO class name is not identical to the appsettings.json section name, you can use the `[SettingsSectionNameAttribute("section-name")]` attribute on the POCO class definition to set the mapping.
 
 ## Choose a validation
 
-The POCOs for the options pattern will all get wired up in `Startup.ConfigureServices()` in your application.
+The POCOs for the options pattern will all get wired up in `Startup.ConfigureServices()` method in your application.
 
 ### No validation
 
 If you do not want to wire up validation for the POCO, use the `AddSettings<T>(config)` method.
 
-    services.AddSettings<ExampleAppSettings>(Configuration);
+    services.AddSettings<ExampleAppSettings>(config);
 
 ### DataAnnotation validation
 
 This method signature implements support for [DataAnnotation](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=netcore-3.1) validation of the POCO.  Including recursive validaton of all sub-objects and collections of objects on the POCO.
 
-    services.AddValidatedSettings<ExampleAppSettings>(Configuration);
+    services.AddValidatedSettings<ExampleAppSettings>(config);
 
 ### IValidateOptions
 
 This approach requires two classes.  One is the POCO for the settings.  The other is the class that derives from `IValidateOptions<T>` and implements the `Validate()` method.
 
-    services.AddValidatedSettings<ExampleAppSettings, ExampleAppSettingsValidator>(Configuration);
+    services.AddValidatedSettings<ExampleAppSettings, ExampleAppSettingsValidator>(config);
 
 The `IValidationOptions<T>` approach is really powerful, but also tedious to use.
+
+## Accessing Configuration in Startup
+
+Sometimes in the Startup.ConfigureServices() method you want to access your settings POCOs with validation.  This can be performed using the `GetValidatedConfigurationSection<T>()` method. It does *not* register the settings class as `IOptions<T>` in the container, therefore you still need to make a call to `AddSettings<T>(config)` or `AddValidatedSettings<T>(config)`
+
+    var appSettings = config.GetValidatedConfigurationSection<ExampleAppSettings>();
+
+Note that if the section is completely missing from your configuration, the POCO will still be created and validation will run against the default values within the POCO class.
 
 ## Experimental
 
 ### AddEagerlyValidatedSettings<T>(config, out x)
 
-There is now an experimental extension method that will eagerly validate the object and also return a reference to the POCO.  
+There is an experimental extension method that will eagerly validate the object and also return a reference to the POCO.  But it is not compatible with situations where you are using `IOptionsMonitor<T>` in your code.  Because it wires up a snapshot of the configuration at the time of startup, the "on-change" listeners will not fire when underlying configuration values change.  
 
-    services.AddEagerlyValidatedSettings<ExampleAppSettings>(Configuration, out var exampleAppSettings);
-
-This method is useful where a particular software package does not properly support being wired up via IoC in .NET Core.  A symptom of this is where the package expects you to create a settings/options object and pass it into its extension method in `Startup.ConfigureServices()`.
-
-NOTE: There is a better method for application startup when you just want a snapshot of the configuration.  It does not register an `IOptions<T>` instances in the DI provider.
-
-    var appSettings = Configuration.GetValidatedConfigurationSection<ExampleAppSettings>();
-                        
-#### AddEagerlyValidatedSettings Caveats:
-
-- Settings are only bound once from the configuration file at startup.
-- The `IOptionsMonitor<T>` will not notice when the underlying configuration values change.
+    services.AddEagerlyValidatedSettings<ExampleAppSettings>(
+        configuration, 
+        out var exampleAppSettings
+        );
+                      
+This method should be considered obsolete in favor of:
+     
+     services.AddValidatedSettings<ExampleAppSettings>(config);
+     var appSettings = config.GetValidatedConfigurationSection<ExampleAppSettings>();
 
 # Build Status
 
