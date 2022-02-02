@@ -1,6 +1,6 @@
 # OptionsPatternValidation
 
-Extension methods (on `IServiceCollection`) that make it easier to wire up `IOptions<T>` POCOs (plain old C# objects) and validation.
+Extension methods (on `IServiceCollection` and `IConfiguration`) that make it easier to wire up `IOptions<T>` POCOs (plain old C# objects) with validation.
 
 - [OptionsPatternValidation](#optionspatternvalidation)
 - [Installation](#installation)
@@ -35,7 +35,11 @@ For most use cases where you want validation, I suggest using the [DataAnnotatio
 
 ## Create POCOs
 
-Each "section" (top level) of your appsettings.json file will need its own POCO.  This is true no matter which validation approach you use.  If the POCO class name is not identical to the appsettings.json section name, you can use the `[SettingsSectionNameAttribute("section-name")]` attribute on the POCO class definition to set the mapping.
+Each "section" (top level) of your appsettings.json file will need its own POCO.  This is true no matter which validation approach you use.  
+
+If the POCO class name is not identical to the appsettings.json section name, you can use the `[SettingsSectionNameAttribute("section-name")]` attribute on the POCO class definition to set the mapping.
+
+Under the covers, this package is calling [GetSection() in Microsoft.Extensions.Configuration](https://docs.microsoft.com/en-us/dotnet/api/system.configuration.configuration.getsection) and [Bind() in Microsoft.Extensions.Configuration](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.configurationbinder.bind) with the same capabilities and restrictions.  Prior to .NET 6.0 (which adds the [ConfigurationKeyName](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.configurationkeynameattribute) attribute) the property names on the POCO must match the names in the appsettings JSON or environment variables.
 
 ## Choose a validation
 
@@ -72,6 +76,8 @@ Note that if the section is completely missing from your configuration, the POCO
 ## Experimental
 
 ### AddEagerlyValidatedSettings<T>(config, out x)
+                                                    
+OBSOLETE: Will be removed at some point.  Use the `GetValidatedConfigurationSection<T>()` method instead.
 
 There is an experimental extension method that will eagerly validate the object and also return a reference to the POCO.  But it is not compatible with situations where you are using `IOptionsMonitor<T>` in your code.  Because it wires up a snapshot of the configuration at the time of startup, the "on-change" listeners will not fire when underlying configuration values change.  
 
@@ -79,11 +85,6 @@ There is an experimental extension method that will eagerly validate the object 
         configuration, 
         out var exampleAppSettings
         );
-                      
-This method should be considered obsolete in favor of:
-     
-     services.AddValidatedSettings<ExampleAppSettings>(config);
-     var appSettings = config.GetValidatedConfigurationSection<ExampleAppSettings>();
 
 # Build Status
 
