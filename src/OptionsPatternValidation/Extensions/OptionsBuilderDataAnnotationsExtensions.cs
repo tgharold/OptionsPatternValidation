@@ -4,11 +4,12 @@ using OptionsPatternValidation.ValidationOptions;
 
 namespace OptionsPatternValidation.Extensions
 {
-    internal static class OptionsBuilderDataAnnotationsExtensions
+    /// <summary>Extension methods for OptionsBuilder&lt;TOptions&gt;.</summary>
+    public static class OptionsBuilderDataAnnotationsExtensions
     {
         /// <summary>First layer of the bridge between IServiceCollectionExtensions
         /// and the recursive DataAnnotations validator.</summary>
-        internal static OptionsBuilder<TOptions> RecursivelyValidateDataAnnotations<TOptions>(
+        public static OptionsBuilder<TOptions> RecursivelyValidateDataAnnotations<TOptions>(
             this OptionsBuilder<TOptions> optionsBuilder
             ) where TOptions : class
         {
