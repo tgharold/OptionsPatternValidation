@@ -35,7 +35,7 @@ For most use cases where you want validation, I suggest using the [DataAnnotatio
 
 ## Create POCOs
 
-Each "section" (top level) of your appsettings.json file will need its own POCO.  This is true no matter which validation approach you use.  
+Each "section" (top level) of your appsettings.json file will need its own POCO (Plain Old C# Object).  This is true no matter which validation approach you use.  
 
 If the POCO class name is not identical to the appsettings.json section name, you can use the `[SettingsSectionNameAttribute("section-name")]` attribute on the POCO class definition to set the mapping.
 
@@ -56,6 +56,8 @@ If you do not want to wire up validation for the POCO, use the `AddSettings<T>(c
 This method signature implements support for [DataAnnotation](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=netcore-3.1) validation of the POCO.  Including recursive validaton of all sub-objects and collections of objects on the POCO.
 
     services.AddValidatedSettings<ExampleAppSettings>(config);
+
+Recursive validation of the object and its child objects is provided via [RecursiveDataAnnotationsValidation](https://www.nuget.org/packages/RecursiveDataAnnotationsValidation).
 
 ### IValidateOptions
 
