@@ -30,12 +30,12 @@ The codebase has a clear separation between the main library and tests:
 
 ### Build
 ```bash
-dotnet build src/OptionsPatternValidation/OptionsPatternValidation.csproj
+dotnet build
 ```
 
 ### Run Tests
 ```bash
-dotnet test test/OptionsPatternValidation.Tests/OptionsPatternValidation.Tests.csproj
+dotnet test
 ```
 
 ### Run Single Test
