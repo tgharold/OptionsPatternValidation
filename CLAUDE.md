@@ -67,3 +67,11 @@ The options validator handles:
 4. Support for custom validation attributes specific to options usage
 
 The validator uses reflection to examine object properties and validate them according to the Options pattern requirements.
+
+## Changelog
+
+`CHANGELOG.md` follows the Keep a Changelog format. When you change the library's public API, validation behavior or NuGet package contents, add an entry under `Unreleased` in the same change. Use the headings Added, Changed, Deprecated, Removed, Fixed and Security.
+
+Mark breaking changes with **BREAKING** and describe what callers must change. Breaking changes include changed configuration section naming, changed error messages that callers might parse, and removed or renamed public members. Keep entries short. Build, test and CI-only changes need an entry only when they affect what ships.
+
+See `RELEASE-PROCESS.md` for how the changelog fits into a release.
