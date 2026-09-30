@@ -59,6 +59,8 @@ This method signature implements support for [DataAnnotation](https://docs.micro
 
 Recursive validation of the object and its child objects is provided via [RecursiveDataAnnotationsValidation](https://www.nuget.org/packages/RecursiveDataAnnotationsValidation).
 
+Validation error messages come from the attributes on your POCO, and this package copies them into the `OptionsValidationException` message as-is.  A custom `ValidationAttribute` that puts the property value in its message (for example a password or connection string) will expose that value in the exception text, and anything that logs the exception.  Keep secrets out of attribute error messages, and do not put untrusted text in them.
+
 ### IValidateOptions
 
 This approach requires two classes.  One is the POCO for the settings.  The other is the class that derives from `IValidateOptions<T>` and implements the `Validate()` method.

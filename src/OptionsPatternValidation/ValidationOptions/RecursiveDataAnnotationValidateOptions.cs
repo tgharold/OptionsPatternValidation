@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,7 +23,8 @@ namespace OptionsPatternValidation.ValidationOptions
         public ValidateOptionsResult Validate(string name, TOptions options)
         {
             if (Name != null && name != Name) return ValidateOptionsResult.Skip;
-            
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
             var validationResults = new List<ValidationResult>();
             if (_recursiveDataAnnotationValidator.TryValidateObjectRecursive(
                 options,
