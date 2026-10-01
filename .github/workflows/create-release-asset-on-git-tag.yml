@@ -1,6 +1,3 @@
-# https://github.com/actions/upload-release-asset
-# https://github.com/montudor/action-zip
-
 on:
   push:
     # Sequence of patterns matched against refs/tags
@@ -9,101 +6,155 @@ on:
 
 name: Create Release on Git Tag
 
+# Default to read-only. The job below grants what it needs.
+permissions:
+  contents: read
+
 env:
   PROJECT: OptionsPatternValidation
   CONFIG: Release
-  TARGET: netstandard2.0
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+    # Publishing needs approval from a required reviewer and only runs for v* tags.
+    environment: nuget
+    permissions:
+      contents: write
+      id-token: write # Needed for NuGet Trusted Publishing (OIDC).
+
     steps:
 
       - name: Checkout code
-        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2
-        
-      # https://stackoverflow.com/a/58178121
-      # https://stackoverflow.com/a/59284102
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # Full history, needed to check that the tag is on master.
+
+      # Only release commits that went through the protected master branch.
+      - name: Verify tag is on master
+        run: |
+          if ! git merge-base --is-ancestor HEAD origin/master; then
+            echo "::error::Tagged commit is not reachable from master"
+            exit 1
+          fi
+
+      # Tag names can contain shell metacharacters, so only accept vMAJOR.MINOR.PATCH[-suffix].
       - name: Get Release Version
         run: |
-          echo "RELEASE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
-          echo "RELEASE_VERSION=${GITHUB_REF##*/v}" >> $GITHUB_ENV           
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag '$GITHUB_REF_NAME' does not look like vMAJOR.MINOR.PATCH[-suffix]"
+            exit 1
+          fi
+          echo "RELEASE_TAG=$GITHUB_REF_NAME" >> "$GITHUB_ENV"
+          echo "RELEASE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
       - name: Print Release Version
         run: |
           echo "GITHUB_REF=$GITHUB_REF"
-          echo "RELEASE_TAG=$RELEASE_TAG env.RELEASE_TAG=${{ env.RELEASE_TAG }}"
-          echo "RELEASE_VERSION=$RELEASE_VERSION env.RELEASE_VERSION=${{ env.RELEASE_VERSION }}"
-        
-      - name: Setup .NET
-        uses: actions/setup-dotnet@871f041373faaad213a635d9afb62905ec029bbb # v1
+          echo "RELEASE_TAG=$RELEASE_TAG"
+          echo "RELEASE_VERSION=$RELEASE_VERSION"
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
-          dotnet-version: 8.0.204
+          dotnet-version: 8.0.x
 
       - name: dotnet build
-        run: dotnet build --configuration ${{ env.CONFIG }}
+        run: dotnet build --configuration "$CONFIG"
 
       - name: dotnet test
-        run: dotnet test --configuration ${{ env.CONFIG }}
+        run: dotnet test --configuration "$CONFIG"
 
       - name: dotnet publish
         working-directory: ./src/${{ env.PROJECT }}
         run: >
-          dotnet publish --configuration ${{ env.CONFIG }} 
-          /p:Version="${{ env.RELEASE_VERSION }}" /p:InformationalVersion="${{ env.RELEASE_VERSION }}"
-      - name: Create Zip File
-        uses: montudor/action-zip@0852c26906e00f8a315c704958823928d8018b28 # v1.0.0
-        with:
-          args: >
-            zip --junk-paths ./${{ env.PROJECT }}-${{ env.RELEASE_TAG }}.zip
-            ./LICENSE ./README.md
-            ./src/${{ env.PROJECT }}/bin/${{ env.CONFIG }}/${{ env.TARGET }}/publish/${{ env.PROJECT }}.pdb
-            ./src/${{ env.PROJECT }}/bin/${{ env.CONFIG }}/${{ env.TARGET }}/publish/${{ env.PROJECT }}.dll
-            ./src/${{ env.PROJECT }}/bin/${{ env.CONFIG }}/${{ env.TARGET }}/publish/${{ env.PROJECT }}.xml
-          
-      - name: dotnet pack
-        working-directory: ./src/${{ env.PROJECT }}
-        run: >
-          dotnet pack --configuration ${{ env.CONFIG }} 
-          /p:Version="${{ env.RELEASE_VERSION }}"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: true
-      
-      # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, 
-      # which include a `upload_url`. See this blog post for more info: 
-      # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-      - name: Attach Zip File to Release
-        id: upload-release-asset-zip
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./${{ env.PROJECT }}-${{ env.RELEASE_TAG }}.zip
-          asset_name: ${{ env.PROJECT }}-${{ env.RELEASE_TAG }}.zip
-          asset_content_type: application/zip
+          dotnet publish --configuration "$CONFIG"
+          /p:Version="$RELEASE_VERSION" /p:InformationalVersion="$RELEASE_VERSION"
 
-      - name: Attach Nuget Package to Release
-        id: upload-release-asset-nuget
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
+
+      # Packs only the library. The solution also contains the example web projects.
+      - name: dotnet pack
+        run: >
+          dotnet pack "./src/${PROJECT}/${PROJECT}.csproj"
+          --configuration "$CONFIG"
+          /p:Version="$RELEASE_VERSION"
+          --output artifacts/
+
+      - name: Inspect artifacts directory
+        run: ls -l artifacts/
+
+      - name: Archive artifacts directory
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./src/${{ env.PROJECT }}/bin/${{ env.CONFIG }}/${{ env.PROJECT }}.${{ env.RELEASE_VERSION }}.nupkg
-          asset_name: ${{ env.PROJECT }}.${{ env.RELEASE_VERSION }}.nupkg
-          asset_content_type: application/zip
+          name: ${{ env.PROJECT }}.artifacts.${{ env.RELEASE_VERSION }}
+          path: |
+            artifacts/
+
+      # Uses the preinstalled GitHub CLI. The old actions/create-release and
+      # actions/upload-release-asset actions are archived and no longer maintained.
+      # The release stays a draft until the last step, because a published release is
+      # immutable and cannot receive assets. A failed run leaves a draft that can be deleted.
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "$RELEASE_TAG"
+          --verify-tag
+          --draft
+          --prerelease
+          --title "Release $RELEASE_TAG"
+          --notes ""
+
+      - name: Create release directory
+        run: mkdir -p release
+
+      # Plain zip instead of a third-party action, so nothing else can touch
+      # artifacts/ between "dotnet pack" and "dotnet nuget push".
+      - name: Create Release Zip File
+        run: zip -r "release/${PROJECT}-${RELEASE_TAG}.zip" LICENSE README.md artifacts/
+
+      - name: Inspect release directory
+        run: ls -l release/
+
+      - name: Archive release directory
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ env.PROJECT }}.release.${{ env.RELEASE_TAG }}
+          path: |
+            release/
+
+      - name: Attach Zip to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release upload "$RELEASE_TAG"
+          "release/${PROJECT}-${RELEASE_TAG}.zip"
+
+      - name: Attach .nupkg to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release upload "$RELEASE_TAG"
+          "artifacts/${PROJECT}.${RELEASE_VERSION}.nupkg"
+
+      # Trusted Publishing: exchanges the GitHub OIDC token for a short-lived NuGet API key.
+      - name: NuGet login
+        id: nuget-login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          user: ${{ vars.NUGET_USER }}
 
       - name: Publish on nuget.org
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: >
-          dotnet nuget push ./src/${{ env.PROJECT }}/bin/${{ env.CONFIG }}/${{ env.PROJECT }}.${{ env.RELEASE_VERSION }}.nupkg 
-          -k ${{ secrets.NugetApiKey }} 
+          dotnet nuget push 'artifacts/*.nupkg'
+          -k "$NUGET_API_KEY"
           -s https://api.nuget.org/v3/index.json
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$RELEASE_TAG" --draft=false
