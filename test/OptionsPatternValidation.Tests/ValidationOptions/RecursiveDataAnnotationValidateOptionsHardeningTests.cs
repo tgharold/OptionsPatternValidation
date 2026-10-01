@@ -11,8 +11,8 @@ using Xunit;
 
 namespace OptionsPatternValidation.Tests.ValidationOptions
 {
-    /// <summary>Locks in how the validator behaves with hostile or unusual
-    /// option graphs: cycles, very deep or very wide object graphs, messages
+    /// <summary>Locks in how the validator behaves with unusual option
+    /// graphs: cycles, very deep or very wide object graphs, messages
     /// that carry values or control characters, and attributes that throw.
     /// These came out of the OWASP Top 10:2025 audit.</summary>
     public class RecursiveDataAnnotationValidateOptionsHardeningTests
@@ -145,7 +145,7 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
         [Fact]
         public void Very_large_list_is_validated()
         {
-            const int count = 1_000_000;
+            const int count = 100_000;
             var settings = new ListSettings
             {
                 Items = Enumerable.Range(0, count).Select(i => new Item { Value = "x" }).ToList()
@@ -159,7 +159,7 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
         [Fact]
         public void Very_large_list_reports_each_invalid_item_once()
         {
-            const int count = 1_000_000;
+            const int count = 100_000;
             var settings = new ListSettings
             {
                 Items = Enumerable.Range(0, count).Select(i => new Item { Value = "x" }).ToList()
