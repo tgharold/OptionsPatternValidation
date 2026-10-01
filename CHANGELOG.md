@@ -8,6 +8,8 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+## 1.4.1 - 2026-10-01
+
 ### Changed
 
 - `RecursiveDataAnnotationValidateOptions<T>.Validate` now checks `options` itself and throws `ArgumentNullException` for the `options` parameter when it is null. A skipped named validator still returns `Skip`.
