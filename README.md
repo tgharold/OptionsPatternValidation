@@ -63,6 +63,10 @@ Validation error messages come from the attributes on your POCO, and this packag
 
 Validation runs on the POCO after binding.  It can only check what the binder produced.  If the binder drops a value, the validator never sees it.  For example, an array element with an enum name that does not exist (a typo such as "Batery") is dropped from the array without an error.  An array that should hold three items then holds two, and validation passes.  The same typo on a plain property throws an `InvalidOperationException` from the binder.  To catch dropped elements, put a `[MinLength(n)]` attribute on an array property, or check the count in an `IValidateOptions<T>` class.  On .NET Framework, `[MinLength]` throws an `InvalidCastException` on a `List<T>` property, so use an array there.
 
+If a validation attribute throws, or a `[RegularExpression]` times out, the exception reaches your code as thrown.  This package does not wrap it in an `OptionsValidationException`, which matches `ValidateDataAnnotations()` in Microsoft.Extensions.Options.  An exception stops the whole validation run, so the failures from other properties are not reported.  Startup, or the first read of the options, fails either way.
+
+The validator has no limit on how deeply objects can nest, and a .NET stack overflow cannot be caught.  It ends the process.  On .NET 8, a chain of nested objects overflows at roughly 850 levels on a 512 KB stack, 1,700 levels on a 1 MB stack and 13,000 levels on an 8 MB stack.  The numbers vary by platform and thread.  The configuration binder uses more stack per level than the validator, so it overflows first.  Options bound from configuration cannot reach the validator's limit.  Only an object graph that your own code builds, such as in `Configure()` or `PostConfigure()`, can.  Keep those graphs shallow.
+
 ### IValidateOptions
 
 This approach requires two classes.  One is the POCO for the settings.  The other is the class that derives from `IValidateOptions<T>` and implements the `Validate()` method.

@@ -10,6 +10,7 @@ Breaking changes are marked **BREAKING**.
 
 ### Changed
 
+- The README now explains that an exception thrown by a validation attribute, or a regular expression timeout, reaches the caller unwrapped, and that the validator has no limit on nesting depth, so a very deep object graph can overflow the stack.
 - Update to `RecursiveDataAnnotationsValidation` 2.3.3. The validator now tracks visited objects by reference, not by value. Two separate objects that are equal by value, such as two identical records in a list, are now each validated and each report their own errors. Before, only the first was validated. Settings that passed because of this gap can now fail at startup. An object that equals one of its own ancestors has its own attributes checked, but its properties are not walked.
 
 ### Fixed
