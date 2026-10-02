@@ -8,6 +8,15 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+### Added
+
+- The package now declares its README, so nuget.org shows it on the package page. Before, the file was in the package but not listed in the package metadata.
+- Each release now builds a symbol package (`.snupkg`) and attaches it to the GitHub release.
+
+### Changed
+
+- The package README is now the repository README, without a separate copy. The "Legacy" section is renamed "History".
+
 ## 1.4.1 - 2026-10-01
 
 ### Changed
