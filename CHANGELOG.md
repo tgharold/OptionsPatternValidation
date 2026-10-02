@@ -14,7 +14,7 @@ No library changes. The assemblies in the NuGet package are the same as v1.4.2.
 
 ### Changed
 
-- The README now explains that the validator only sees what the configuration binder produces. An array element with an unknown enum name is dropped without an error, and validation passes.
+- The README now explains that the validator only sees what the configuration binder produces. An array element with an unknown enum name is dropped without an error, and validation passes. It also notes that `[MinLength]` throws on a `List<T>` property on .NET Framework.
 
 ## 1.4.2 - 2026-10-01
 
