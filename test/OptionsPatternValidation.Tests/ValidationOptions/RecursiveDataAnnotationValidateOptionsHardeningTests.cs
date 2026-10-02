@@ -72,6 +72,106 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
 
         #endregion
 
+        #region Value equality
+
+        // A C# record, or any class that overrides Equals and GetHashCode,
+        // compares by value. These classes do the same by hand. Records need
+        // an IsExternalInit shim on net481, so the tests avoid them.
+
+        public class ValueItem : IEquatable<ValueItem>
+        {
+            [Required]
+            public string Value { get; set; }
+
+            public bool Equals(ValueItem other) => other != null && Value == other.Value;
+
+            public override bool Equals(object obj) => Equals(obj as ValueItem);
+
+            public override int GetHashCode() => Value?.GetHashCode() ?? 0;
+        }
+
+        public class ValueItemSettings
+        {
+            public ValueItem First { get; set; }
+
+            public ValueItem Second { get; set; }
+
+            public List<ValueItem> Items { get; set; }
+        }
+
+        [Fact(Skip = "Known gap in RecursiveDataAnnotationsValidation 2.1.1: visited objects are tracked by value equality. Passes on 2.3.3.")]
+        public void Equal_but_distinct_objects_are_each_validated()
+        {
+            var settings = new ValueItemSettings
+            {
+                First = new ValueItem { Value = null },
+                Second = new ValueItem { Value = null }
+            };
+
+            var result = Validate(settings);
+
+            Assert.False(result.Succeeded);
+            Assert.Collection(
+                result.Failures,
+                f => Assert.Contains("'First.Value'", f),
+                f => Assert.Contains("'Second.Value'", f));
+        }
+
+        [Fact(Skip = "Known gap in RecursiveDataAnnotationsValidation 2.1.1: visited objects are tracked by value equality. Passes on 2.3.3.")]
+        public void Equal_but_distinct_list_items_are_each_validated()
+        {
+            var settings = new ValueItemSettings
+            {
+                Items = new List<ValueItem>
+                {
+                    new ValueItem { Value = null },
+                    new ValueItem { Value = null }
+                }
+            };
+
+            var result = Validate(settings);
+
+            Assert.False(result.Succeeded);
+            Assert.Collection(
+                result.Failures,
+                f => Assert.Contains("'Items[0].Value'", f),
+                f => Assert.Contains("'Items[1].Value'", f));
+        }
+
+        /// <summary>Hashes and compares its whole graph, the way a record does.</summary>
+        public class ValueNode : IEquatable<ValueNode>
+        {
+            [Required]
+            public string Name { get; set; }
+
+            public ValueNode Next { get; set; }
+
+            public bool Equals(ValueNode other) =>
+                other != null && Name == other.Name && Equals(Next, other.Next);
+
+            public override bool Equals(object obj) => Equals(obj as ValueNode);
+
+            public override int GetHashCode() =>
+                unchecked(((Name?.GetHashCode() ?? 0) * 31) + (Next?.GetHashCode() ?? 0));
+        }
+
+        /// <summary>With a validator that tracks visited objects by value, this
+        /// test overflows the stack in GetHashCode and kills the test host.
+        /// RecursiveDataAnnotationsValidation 2.1.1 does that. The fix is to
+        /// track visited objects by reference.</summary>
+        [Fact(Skip = "Known gap in RecursiveDataAnnotationsValidation 2.1.1: overflows the stack in GetHashCode and aborts the test run. Passes on 2.3.3.")]
+        public void Self_referencing_value_equal_object_terminates()
+        {
+            var a = new ValueNode { Name = "a" };
+            a.Next = a;
+
+            var result = Validate(a);
+
+            Assert.True(result.Succeeded);
+        }
+
+        #endregion
+
         #region Size
 
         // The validator recurses once per nesting level. On the 512 KB default
@@ -135,6 +235,25 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             var failure = Assert.Single(result.Failures);
             var expectedPath = string.Concat(Enumerable.Repeat("Next.", depth - 1)) + "Name";
             Assert.Contains($"'{expectedPath}'", failure);
+        }
+
+        [Fact]
+        public void Deeply_nested_graph_reports_every_invalid_level()
+        {
+            // Every level is invalid, so every error path is rebuilt at each
+            // level above it. In 2.1.1 the cost grows with the cube of the
+            // depth. This checks the result. Timing is not asserted, because
+            // wall-clock limits are flaky on shared CI runners.
+            const int depth = 1_000;
+            var root = BuildChain(depth);
+            for (var node = root; node != null; node = node.Next) node.Name = null;
+
+            var result = RunOnLargeStack(() => Validate(root));
+
+            Assert.False(result.Succeeded);
+            Assert.Equal(depth, result.Failures.Count());
+            var deepestPath = string.Concat(Enumerable.Repeat("Next.", depth - 1)) + "Name";
+            Assert.Contains(result.Failures, f => f.Contains($"'{deepestPath}'"));
         }
 
         public class Item

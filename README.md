@@ -61,6 +61,8 @@ Recursive validation of the object and its child objects is provided via [Recurs
 
 Validation error messages come from the attributes on your POCO, and this package copies them into the `OptionsValidationException` message as-is.  A custom `ValidationAttribute` that puts the property value in its message (for example a password or connection string) will expose that value in the exception text, and anything that logs the exception.  Keep secrets out of attribute error messages, and do not put untrusted text in them.
 
+Validation runs on the POCO after binding.  It can only check what the binder produced.  If the binder drops a value, the validator never sees it.  For example, an array element with an enum name that does not exist (a typo such as "Batery") is dropped from the array without an error.  An array that should hold three items then holds two, and validation passes.  The same typo on a plain property throws an `InvalidOperationException` from the binder.  To catch dropped elements, put a `[MinLength(n)]` attribute on an array property, or check the count in an `IValidateOptions<T>` class.  On .NET Framework, `[MinLength]` throws an `InvalidCastException` on a `List<T>` property, so use an array there.
+
 ### IValidateOptions
 
 This approach requires two classes.  One is the POCO for the settings.  The other is the class that derives from `IValidateOptions<T>` and implements the `Validate()` method.
