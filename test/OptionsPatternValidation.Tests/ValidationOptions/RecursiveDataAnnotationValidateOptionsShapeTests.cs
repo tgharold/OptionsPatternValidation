@@ -113,7 +113,7 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
         public class CollectionAttributeSettings
         {
             [MinLength(2)]
-            public List<Item> Items { get; set; } = new List<Item> { new Item { V = "a" } };
+            public Item[] Items { get; set; } = { new Item { V = "a" } };
         }
 
         [Fact]
@@ -124,6 +124,31 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             var failure = Assert.Single(result.Failures);
             Assert.Contains("'Items'", failure);
         }
+
+        public class ListAttributeSettings
+        {
+            [MinLength(2)]
+            public List<Item> Items { get; set; } = new List<Item> { new Item { V = "a" } };
+        }
+
+#if NETFRAMEWORK
+        /// <summary>Gap in .NET Framework: MinLengthAttribute only accepts arrays and
+        /// strings, so it throws on a List. Use an array there.</summary>
+        [Fact]
+        public void MinLength_on_a_list_throws_InvalidCastException()
+        {
+            Assert.Throws<InvalidCastException>(() => Validate(new ListAttributeSettings()));
+        }
+#else
+        [Fact]
+        public void MinLength_on_a_list_is_checked()
+        {
+            var result = Validate(new ListAttributeSettings());
+
+            var failure = Assert.Single(result.Failures);
+            Assert.Contains("'Items'", failure);
+        }
+#endif
 
         #endregion
 

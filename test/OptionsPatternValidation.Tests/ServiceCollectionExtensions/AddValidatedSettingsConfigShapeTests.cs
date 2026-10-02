@@ -390,13 +390,13 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
         public class AllowListSettings
         {
             [MinLength(1)]
-            public List<string> AllowedOrigins { get; set; } = new List<string>();
+            public string[] AllowedOrigins { get; set; } = Array.Empty<string>();
 
             public List<string> Defaults { get; set; } = new List<string> { "a", "b" };
         }
 
         [Fact]
-        public void Missing_section_validates_the_empty_default_list()
+        public void Missing_section_validates_the_empty_default_array()
         {
             var exception = Assert.Throws<OptionsValidationException>(
                 () => BindMissingSection<AllowListSettings>());
