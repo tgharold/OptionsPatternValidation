@@ -460,7 +460,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
         /// <summary>Records compare by value, so two invalid items with the same
         /// content are equal. Records are the usual way to hit the
         /// equal-but-distinct gap, since nobody writes Equals by hand.</summary>
-        [Fact(Skip = "Known gap in RecursiveDataAnnotationsValidation 2.1.1: visited objects are tracked by value equality, so the second equal record is skipped. Passes on 2.3.3.")]
+        [Fact]
         public void Equal_invalid_records_in_a_list_are_each_reported()
         {
             var failures = Failures<EndpointsSettings>(
