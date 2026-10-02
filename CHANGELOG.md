@@ -8,6 +8,10 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+## 1.4.2 - 2026-10-01
+
+No library changes. The assemblies in the NuGet package are the same as v1.4.1.
+
 ### Added
 
 - The package now declares its README, so nuget.org shows it on the package page. Before, the file was in the package but not listed in the package metadata.
