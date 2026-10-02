@@ -8,6 +8,8 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+## 1.5.0 - 2026-10-02
+
 ### Changed
 
 - The README now explains that an exception thrown by a validation attribute, or a regular expression timeout, reaches the caller unwrapped, and that the validator has no limit on nesting depth, so a very deep object graph can overflow the stack.
