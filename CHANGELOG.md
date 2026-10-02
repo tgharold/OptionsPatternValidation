@@ -8,6 +8,14 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+### Changed
+
+- Update to `RecursiveDataAnnotationsValidation` 2.3.3. The validator now tracks visited objects by reference, not by value. Two separate objects that are equal by value, such as two identical records in a list, are now each validated and each report their own errors. Before, only the first was validated. Settings that passed because of this gap can now fail at startup.
+
+### Fixed
+
+- A self-referencing object that compares by value, such as a record or a class that overrides `Equals` and `GetHashCode`, no longer overflows the stack during validation.
+
 ## 1.4.3 - 2026-10-01
 
 No library changes. The assemblies in the NuGet package are the same as v1.4.2.
