@@ -8,6 +8,10 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+## 1.4.3 - 2026-10-01
+
+No library changes. The assemblies in the NuGet package are the same as v1.4.2.
+
 ### Changed
 
 - The README now explains that the validator only sees what the configuration binder produces. An array element with an unknown enum name is dropped without an error, and validation passes.
