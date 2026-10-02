@@ -16,6 +16,8 @@ Breaking changes are marked **BREAKING**.
 ### Changed
 
 - The package README is now the repository README, without a separate copy. The "Legacy" section is renamed "History".
+- Release workflow: run the tests on .NET 8, .NET 10 and .NET Framework 4.8.1, on Linux and Windows, before publishing.
+- Release workflow: build the package and create a draft GitHub release first. Then wait for approval before the nuget.org push and the release publish.
 
 ## 1.4.1 - 2026-10-01
 
