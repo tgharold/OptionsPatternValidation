@@ -209,6 +209,41 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
             Assert.Empty(result.Solar);
         }
 
+        public class ExpectedDevicesSettings
+        {
+            [MinLength(2)]
+            public SolarDevice[] Solar { get; set; } = Array.Empty<SolarDevice>();
+        }
+
+        /// <summary>The README suggests a length attribute on the collection to
+        /// catch elements the binder dropped.</summary>
+        [Fact]
+        public void MinLength_on_the_array_catches_an_element_the_binder_dropped()
+        {
+            var failures = Failures<ExpectedDevicesSettings>(@"{
+                ""Solar"": [
+                    { ""Type"": ""Inverter"", ""Host"": ""10.0.0.1"" },
+                    { ""Type"": ""Batery"", ""Host"": ""10.0.0.2"" }
+                ]
+            }");
+
+            var failure = Assert.Single(failures);
+            Assert.Contains("'Solar'", failure);
+        }
+
+        [Fact]
+        public void MinLength_on_the_array_passes_when_no_element_was_dropped()
+        {
+            var result = Bind<ExpectedDevicesSettings>(@"{
+                ""Solar"": [
+                    { ""Type"": ""Inverter"", ""Host"": ""10.0.0.1"" },
+                    { ""Type"": ""Meter"", ""Host"": ""10.0.0.2"" }
+                ]
+            }");
+
+            Assert.Equal(2, result.Solar.Length);
+        }
+
         #endregion
 
         #region Optional sections
