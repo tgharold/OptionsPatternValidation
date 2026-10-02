@@ -67,6 +67,8 @@ If a validation attribute throws, or a `[RegularExpression]` times out, the exce
 
 The validator has no limit on how deeply objects can nest, and a .NET stack overflow cannot be caught.  It ends the process.  On .NET 8, a chain of nested objects overflows at roughly 850 levels on a 512 KB stack, 1,700 levels on a 1 MB stack and 13,000 levels on an 8 MB stack.  The numbers vary by platform and thread.  The configuration binder uses more stack per level than the validator, so it overflows first.  Options bound from configuration cannot reach the validator's limit.  Only an object graph that your own code builds, such as in `Configure()` or `PostConfigure()`, can.  Keep those graphs shallow.
 
+The `AddValidatedSettings<T>()` methods validate the default (unnamed) options instance.  If you call `RecursivelyValidateDataAnnotations()` yourself on an `OptionsBuilder<T>` that has a name, such as `services.AddOptions<T>("primary")`, validation runs only for that name.  Reading the default instance, or an instance with any other name, skips validation without an error.
+
 ### IValidateOptions
 
 This approach requires two classes.  One is the POCO for the settings.  The other is the class that derives from `IValidateOptions<T>` and implements the `Validate()` method.

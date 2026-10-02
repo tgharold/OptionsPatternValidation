@@ -8,6 +8,10 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+### Changed
+
+- The README now explains that `RecursivelyValidateDataAnnotations()` on a named `OptionsBuilder<T>` validates only that name, and skips the default instance and any other name.
+
 ## 1.5.0 - 2026-10-02
 
 ### Changed
