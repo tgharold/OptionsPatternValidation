@@ -10,11 +10,12 @@ Breaking changes are marked **BREAKING**.
 
 ### Changed
 
-- Update to `RecursiveDataAnnotationsValidation` 2.3.3. The validator now tracks visited objects by reference, not by value. Two separate objects that are equal by value, such as two identical records in a list, are now each validated and each report their own errors. Before, only the first was validated. Settings that passed because of this gap can now fail at startup.
+- Update to `RecursiveDataAnnotationsValidation` 2.3.3. The validator now tracks visited objects by reference, not by value. Two separate objects that are equal by value, such as two identical records in a list, are now each validated and each report their own errors. Before, only the first was validated. Settings that passed because of this gap can now fail at startup. An object that equals one of its own ancestors has its own attributes checked, but its properties are not walked.
 
 ### Fixed
 
-- A self-referencing object that compares by value, such as a record or a class that overrides `Equals` and `GetHashCode`, no longer overflows the stack during validation.
+- An object that points to itself and compares by value, such as a record or a class that overrides `Equals` and `GetHashCode`, no longer overflows the stack during validation on .NET. Two such objects that point to each other with equal values can still overflow it. On .NET Framework, a self-referencing record can still overflow it.
+- A property of type `Uri` that holds a relative `Uri`, such as the value `/api` bound from configuration, no longer makes validation throw. The validator no longer walks the properties of `Uri`, `Type`, `Assembly`, delegates and a few other framework types. Attributes on the property that holds them, such as `[Required]`, still run.
 
 ## 1.4.3 - 2026-10-01
 
