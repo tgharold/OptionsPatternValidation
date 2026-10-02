@@ -16,15 +16,17 @@ The core functionality includes:
 The codebase has a clear separation between the main library and tests:
 
 1. **src/OptionsPatternValidation/** - The core library project with:
-   - Main validator implementation (`OptionsValidator.cs`)
-   - Options pattern validation logic
-   - Extension methods and interfaces
+   - The public entry points: `ServiceCollectionExtensions.cs` and `ConfigurationExtensions.cs`
+   - `Extensions/OptionsBuilderDataAnnotationsExtensions.cs`, which adds `RecursivelyValidateDataAnnotations()` to `OptionsBuilder<T>`
+   - `ValidationOptions/RecursiveDataAnnotationValidateOptions.cs`, the internal `IValidateOptions<T>` that calls the RecursiveDataAnnotationsValidation package
+   - `SettingsSectionNameAttribute.cs`, which maps a POCO to a configuration section
 
 2. **test/OptionsPatternValidation.Tests/** - Test project with:
-   - Tests for various validation scenarios
-   - Example test models showing options pattern usage
+   - Tests grouped by the class they cover, such as `ServiceCollectionExtensions/` and `ValidationOptions/`
+   - Settings POCOs used as test models in `Settings/`
+   - JSON test configuration in `Json/`
 
-3. **examples/** - Example project showing usage patterns
+3. **examples/** - Two example web projects showing usage patterns
 
 ## Commands for Development
 
@@ -50,8 +52,9 @@ dotnet test test/OptionsPatternValidation.Tests/OptionsPatternValidation.Tests.c
 
 ## Key Files to Understand
 
-- `OptionsValidator.cs` - Main implementation that handles options pattern validation
-- Test models in `test/OptionsPatternValidation.Tests/TestModels/` show various usage patterns
+- `src/OptionsPatternValidation/ValidationOptions/RecursiveDataAnnotationValidateOptions.cs` - Runs the recursive validation and formats the error messages
+- `src/OptionsPatternValidation/ServiceCollectionExtensions.cs` - The `AddSettings`, `AddValidatedSettings` and `AddEagerlyValidatedSettings` methods
+- Settings POCOs in `test/OptionsPatternValidation.Tests/Settings/` show various usage patterns
 
 ## Target Frameworks
 
