@@ -75,8 +75,9 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
         #region Value equality
 
         // A C# record, or any class that overrides Equals and GetHashCode,
-        // compares by value. These classes do the same by hand. Records need
-        // an IsExternalInit shim on net481, so the tests avoid them.
+        // compares by value. These classes do the same by hand. Records would
+        // work here too, with the IsExternalInit shim that the config shape
+        // tests define for net481.
 
         public class ValueItem : IEquatable<ValueItem>
         {
@@ -99,7 +100,7 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             public List<ValueItem> Items { get; set; }
         }
 
-        [Fact(Skip = "Known gap in RecursiveDataAnnotationsValidation 2.1.1: visited objects are tracked by value equality. Passes on 2.3.3.")]
+        [Fact]
         public void Equal_but_distinct_objects_are_each_validated()
         {
             var settings = new ValueItemSettings
@@ -117,7 +118,7 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
                 f => Assert.Contains("'Second.Value'", f));
         }
 
-        [Fact(Skip = "Known gap in RecursiveDataAnnotationsValidation 2.1.1: visited objects are tracked by value equality. Passes on 2.3.3.")]
+        [Fact]
         public void Equal_but_distinct_list_items_are_each_validated()
         {
             var settings = new ValueItemSettings
@@ -155,11 +156,17 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
                 unchecked(((Name?.GetHashCode() ?? 0) * 31) + (Next?.GetHashCode() ?? 0));
         }
 
-        /// <summary>With a validator that tracks visited objects by value, this
-        /// test overflows the stack in GetHashCode and kills the test host.
-        /// RecursiveDataAnnotationsValidation 2.1.1 does that. The fix is to
-        /// track visited objects by reference.</summary>
-        [Fact(Skip = "Known gap in RecursiveDataAnnotationsValidation 2.1.1: overflows the stack in GetHashCode and aborts the test run. Passes on 2.3.3.")]
+        /// <summary>A validator that tracks visited objects by value overflows
+        /// the stack in GetHashCode here and kills the test host.
+        /// RecursiveDataAnnotationsValidation 2.1.1 did that. Version 2.3.3
+        /// tracks visited objects by reference. On .NET Framework the
+        /// framework's Validator calls GetHashCode on the object, which follows
+        /// Next forever, so the test is skipped there.</summary>
+#if NETFRAMEWORK
+        [Fact(Skip = "On .NET Framework the framework Validator calls GetHashCode, which overflows the stack for a self-referencing value-equal object.")]
+#else
+        [Fact]
+#endif
         public void Self_referencing_value_equal_object_terminates()
         {
             var a = new ValueNode { Name = "a" };
@@ -241,9 +248,10 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
         public void Deeply_nested_graph_reports_every_invalid_level()
         {
             // Every level is invalid, so every error path is rebuilt at each
-            // level above it. In 2.1.1 the cost grows with the cube of the
-            // depth. This checks the result. Timing is not asserted, because
-            // wall-clock limits are flaky on shared CI runners.
+            // level above it. In 2.1.1 and 2.3.3 the cost grows with the cube
+            // of the depth: 4,000 levels took about 30 s on 2.3.3. This checks
+            // the result. Timing is not asserted, because wall-clock limits
+            // are flaky on shared CI runners.
             const int depth = 1_000;
             var root = BuildChain(depth);
             for (var node = root; node != null; node = node.Next) node.Name = null;

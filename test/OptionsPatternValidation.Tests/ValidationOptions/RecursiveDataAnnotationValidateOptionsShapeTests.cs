@@ -13,7 +13,7 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
     /// <summary>Characterization tests for how the validator walks different
     /// object graph shapes: collections, structs, inheritance, framework types
     /// and shared references. Most of the walking is done by the
-    /// RecursiveDataAnnotationsValidation package. These tests pin what 1.4
+    /// RecursiveDataAnnotationsValidation package. These tests pin what
     /// callers see today, so that a dependency upgrade cannot change it
     /// without a failing test. Where the behavior is a gap and not a feature,
     /// the test says so. If an upgrade closes a gap, update the test and add a
@@ -261,7 +261,8 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             [Required]
             public string Name { get; set; }
 
-            // Not validated: static and private members.
+            // Not checked: attributes on a static property. Not read: private
+            // properties. Objects under a public static property are walked.
             [Required]
             public static string StaticValue { get; set; }
 
@@ -318,6 +319,29 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
         public void Framework_typed_properties_do_not_add_failures_or_throw()
         {
             var result = Validate(new FrameworkTypeSettings());
+
+            var failure = Assert.Single(result.Failures);
+            Assert.Contains("'Name'", failure);
+        }
+
+        public class RelativeFrameworkTypeSettings
+        {
+            public Uri Path { get; set; } = new Uri("/api", UriKind.Relative);
+
+            public Type Kind { get; set; } = typeof(string);
+
+            [Required]
+            public string Name { get; set; }
+        }
+
+        /// <summary>Reading the properties of a relative Uri or of a Type
+        /// throws. RecursiveDataAnnotationsValidation 2.1.1 walked them and
+        /// failed with TargetInvocationException. Version 2.3.3 does not walk
+        /// these framework types.</summary>
+        [Fact]
+        public void Relative_uri_and_type_properties_do_not_throw()
+        {
+            var result = Validate(new RelativeFrameworkTypeSettings());
 
             var failure = Assert.Single(result.Failures);
             Assert.Contains("'Name'", failure);
