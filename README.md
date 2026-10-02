@@ -17,7 +17,7 @@ Extension methods (on `IServiceCollection` and `IConfiguration`) that make it ea
     - [AddEagerlyValidatedSettings<T>(config, out x)](#addeagerlyvalidatedsettingstconfig-out-x)
 - [Build Status](#build-status)
 - [Nuget Page](#nuget-page)
-- [Legacy](#legacy)
+- [History](#history)
 
 # Installation
 
@@ -98,6 +98,6 @@ There is an experimental extension method that will eagerly validate the object 
 
 https://www.nuget.org/packages/OptionsPatternValidation/
 
-# Legacy
+# History
 
 This grew out of [experiments with the .NET Core options pattern](https://github.com/tgharold/DotNetCore-ConfigurationOptionsValidationExamples) and the desire to simplify how sections in the appsettings.json / .NET configuration system get wired up to POCOs and validation for those POCOs.
