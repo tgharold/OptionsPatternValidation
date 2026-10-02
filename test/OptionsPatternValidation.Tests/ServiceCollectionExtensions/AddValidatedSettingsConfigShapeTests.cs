@@ -23,7 +23,7 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
     /// way (nested sections, arrays of derived items, optional sections,
     /// cross-field rules, init-only members and records). Each test binds JSON
     /// through AddValidatedSettings and reads the value, so it covers the
-    /// binder and the validator together. These pin what 1.4 callers see today.
+    /// binder and the validator together. These pin what callers see today.
     /// Where the behavior is a gap and not a feature, the test says so.</summary>
     public class AddValidatedSettingsConfigShapeTests
     {
@@ -458,8 +458,9 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
         }
 
         /// <summary>Records compare by value, so two invalid items with the same
-        /// content are equal. Records are the usual way to hit the
-        /// equal-but-distinct gap, since nobody writes Equals by hand.</summary>
+        /// content are equal. Records are the usual way to have equal but
+        /// distinct items, since nobody writes Equals by hand. Each item must
+        /// still be validated and reported.</summary>
         [Fact]
         public void Equal_invalid_records_in_a_list_are_each_reported()
         {
@@ -469,6 +470,29 @@ namespace OptionsPatternValidation.Tests.ServiceCollectionExtensions
             Assert.Equal(2, failures.Count);
             Assert.Contains(failures, f => f.Contains("'Endpoints[0].Host'"));
             Assert.Contains(failures, f => f.Contains("'Endpoints[1].Host'"));
+        }
+
+        #endregion
+
+        #region Framework types
+
+        public class ApiClientSettings
+        {
+            public Uri BaseAddress { get; set; }
+
+            [Required]
+            public string Name { get; set; }
+        }
+
+        /// <summary>The binder converts "/api" to a relative Uri. Reading the
+        /// properties of a relative Uri throws, so a validator that walked into
+        /// it would fail. RecursiveDataAnnotationsValidation 2.1.1 did.</summary>
+        [Fact]
+        public void Relative_uri_is_bound_and_validated()
+        {
+            var settings = Bind<ApiClientSettings>("{ \"Name\": \"x\", \"BaseAddress\": \"/api\" }");
+
+            Assert.False(settings.BaseAddress.IsAbsoluteUri);
         }
 
         #endregion
