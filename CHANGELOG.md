@@ -8,6 +8,10 @@ Breaking changes are marked **BREAKING**.
 
 ## Unreleased
 
+## 1.5.1 - 2026-10-02
+
+No library changes. The assemblies in the NuGet package are the same as v1.5.0.
+
 ### Changed
 
 - The README now explains that `RecursivelyValidateDataAnnotations()` on a named `OptionsBuilder<T>` validates only that name, and skips the default instance and any other name.
