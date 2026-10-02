@@ -55,7 +55,8 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             var result = Validate(a);
 
             Assert.False(result.Succeeded);
-            Assert.Contains(result.Failures, f => f.Contains("Name"));
+            var failure = Assert.Single(result.Failures);
+            Assert.Contains("'Next.Name'", failure);
         }
 
         [Fact]
@@ -73,11 +74,13 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
 
         #region Size
 
-        // The validator recurses once per nesting level. On a default 512 KB
-        // worker stack (macOS) a chain of roughly 900 nodes overflows, so the
-        // deep tests run on a thread with an explicit large stack. That keeps
-        // them about the validator and not about the host's stack size.
+        // The validator recurses once per nesting level. On the 512 KB default
+        // thread stack on macOS a chain of roughly 900 nodes overflows. Other
+        // platforms have different default stack sizes, so the limit differs.
+        // The deep tests run on a thread with an explicit large stack. That
+        // keeps them about the validator and not about the host's stack size.
         private const int LargeStackBytes = 64 * 1024 * 1024;
+        private static readonly TimeSpan LargeStackTimeout = TimeSpan.FromMinutes(1);
 
         private static Node BuildChain(int depth)
         {
@@ -100,9 +103,9 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             {
                 try { value = func(); }
                 catch (Exception ex) { failure = ex; }
-            }, LargeStackBytes);
+            }, LargeStackBytes) { IsBackground = true };
             thread.Start();
-            thread.Join();
+            Assert.True(thread.Join(LargeStackTimeout), "Validation did not finish in time.");
             if (failure != null) ExceptionDispatchInfo.Capture(failure).Throw();
             return value;
         }
@@ -120,7 +123,8 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
         [Fact]
         public void Deeply_nested_graph_reports_invalid_member_at_the_bottom()
         {
-            var root = BuildChain(10_000);
+            const int depth = 10_000;
+            var root = BuildChain(depth);
             var bottom = root;
             while (bottom.Next != null) bottom = bottom.Next;
             bottom.Name = null;
@@ -128,7 +132,9 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             var result = RunOnLargeStack(() => Validate(root));
 
             Assert.False(result.Succeeded);
-            Assert.Single(result.Failures);
+            var failure = Assert.Single(result.Failures);
+            var expectedPath = string.Concat(Enumerable.Repeat("Next.", depth - 1)) + "Name";
+            Assert.Contains($"'{expectedPath}'", failure);
         }
 
         public class Item
@@ -170,7 +176,10 @@ namespace OptionsPatternValidation.Tests.ValidationOptions
             var result = Validate(settings);
 
             Assert.False(result.Succeeded);
-            Assert.Equal(2, result.Failures.Count());
+            Assert.Collection(
+                result.Failures,
+                f => Assert.Contains("'Items[0].Value'", f),
+                f => Assert.Contains($"'Items[{count - 1}].Value'", f));
         }
 
         #endregion
